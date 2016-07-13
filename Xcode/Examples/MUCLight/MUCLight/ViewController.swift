@@ -108,6 +108,7 @@ extension ViewController {
 
 		cell.textLabel?.text = room.roomname()
 		cell.detailTextLabel?.text = room.roomJID.full()
+		cell.imageView?.image = UIImage(named: "people")
 		
 		return cell
 	}
