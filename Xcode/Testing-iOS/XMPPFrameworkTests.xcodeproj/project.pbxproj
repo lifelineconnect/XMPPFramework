@@ -1,385 +1,939 @@
-// !$*UTF8*$!
-{
-	archiveVersion = 1;
-	classes = {
-	};
-	objectVersion = 46;
-	objects = {
-
-/* Begin PBXBuildFile section */
-		D973A07C1D2F18040096F3ED /* CapabilitiesHashingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A06F1D2F18040096F3ED /* CapabilitiesHashingTest.m */; };
-		D973A07D1D2F18040096F3ED /* EncodeDecodeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0701D2F18040096F3ED /* EncodeDecodeTest.m */; };
-		D973A07E1D2F18040096F3ED /* XMPPHTTPFileUploadTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0711D2F18040096F3ED /* XMPPHTTPFileUploadTests.m */; };
-		D973A07F1D2F18040096F3ED /* XMPPMessageArchiveManagementTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0721D2F18040096F3ED /* XMPPMessageArchiveManagementTests.m */; };
-		D973A0801D2F18040096F3ED /* XMPPMockStream.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0741D2F18040096F3ED /* XMPPMockStream.m */; };
-		D973A0811D2F18040096F3ED /* XMPPMUCLightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0751D2F18040096F3ED /* XMPPMUCLightTests.m */; };
-		D973A0821D2F18040096F3ED /* XMPPPushTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D973A0761D2F18040096F3ED /* XMPPPushTests.swift */; };
-		D973A0831D2F18040096F3ED /* XMPPRoomLightCoreDataStorageTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0771D2F18040096F3ED /* XMPPRoomLightCoreDataStorageTests.m */; };
-		D973A0841D2F18040096F3ED /* XMPPRoomLightTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0781D2F18040096F3ED /* XMPPRoomLightTests.m */; };
-		D973A0851D2F18040096F3ED /* XMPPStorageHintTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A0791D2F18040096F3ED /* XMPPStorageHintTests.m */; };
-		D973A0861D2F18040096F3ED /* XMPPURITests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A07A1D2F18040096F3ED /* XMPPURITests.m */; };
-		D973A0871D2F18040096F3ED /* XMPPvCardTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D973A07B1D2F18040096F3ED /* XMPPvCardTests.m */; };
-		D973A0891D2F18310096F3ED /* XMPPSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D973A0881D2F18310096F3ED /* XMPPSwift.swift */; };
-		FDD2AB232C05507F2045FFFC /* Pods_XMPPFrameworkTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5CD0B17267211A912DE2098E /* Pods_XMPPFrameworkTests.framework */; };
-/* End PBXBuildFile section */
-
-/* Begin PBXFileReference section */
-		0641E7F01A0D0D7EE9AA2ED6 /* Pods-XMPPFrameworkTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XMPPFrameworkTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5CD0B17267211A912DE2098E /* Pods_XMPPFrameworkTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_XMPPFrameworkTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		63F50D921C60208200CA0201 /* XMPPFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = XMPPFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		63F50D971C60208200CA0201 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		AE993B61B8D33F0468A9B133 /* Pods-XMPPFrameworkTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-XMPPFrameworkTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests.release.xcconfig"; sourceTree = "<group>"; };
-		D973A06E1D2F18030096F3ED /* XMPPFrameworkTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XMPPFrameworkTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		D973A06F1D2F18040096F3ED /* CapabilitiesHashingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CapabilitiesHashingTest.m; path = "../../Testing-Shared/CapabilitiesHashingTest.m"; sourceTree = "<group>"; };
-		D973A0701D2F18040096F3ED /* EncodeDecodeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EncodeDecodeTest.m; path = "../../Testing-Shared/EncodeDecodeTest.m"; sourceTree = "<group>"; };
-		D973A0711D2F18040096F3ED /* XMPPHTTPFileUploadTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPHTTPFileUploadTests.m; path = "../../Testing-Shared/XMPPHTTPFileUploadTests.m"; sourceTree = "<group>"; };
-		D973A0721D2F18040096F3ED /* XMPPMessageArchiveManagementTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPMessageArchiveManagementTests.m; path = "../../Testing-Shared/XMPPMessageArchiveManagementTests.m"; sourceTree = "<group>"; };
-		D973A0731D2F18040096F3ED /* XMPPMockStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XMPPMockStream.h; path = "../../Testing-Shared/XMPPMockStream.h"; sourceTree = "<group>"; };
-		D973A0741D2F18040096F3ED /* XMPPMockStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPMockStream.m; path = "../../Testing-Shared/XMPPMockStream.m"; sourceTree = "<group>"; };
-		D973A0751D2F18040096F3ED /* XMPPMUCLightTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPMUCLightTests.m; path = "../../Testing-Shared/XMPPMUCLightTests.m"; sourceTree = "<group>"; };
-		D973A0761D2F18040096F3ED /* XMPPPushTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XMPPPushTests.swift; path = "../../Testing-Shared/XMPPPushTests.swift"; sourceTree = "<group>"; };
-		D973A0771D2F18040096F3ED /* XMPPRoomLightCoreDataStorageTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPRoomLightCoreDataStorageTests.m; path = "../../Testing-Shared/XMPPRoomLightCoreDataStorageTests.m"; sourceTree = "<group>"; };
-		D973A0781D2F18040096F3ED /* XMPPRoomLightTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPRoomLightTests.m; path = "../../Testing-Shared/XMPPRoomLightTests.m"; sourceTree = "<group>"; };
-		D973A0791D2F18040096F3ED /* XMPPStorageHintTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPStorageHintTests.m; path = "../../Testing-Shared/XMPPStorageHintTests.m"; sourceTree = "<group>"; };
-		D973A07A1D2F18040096F3ED /* XMPPURITests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPURITests.m; path = "../../Testing-Shared/XMPPURITests.m"; sourceTree = "<group>"; };
-		D973A07B1D2F18040096F3ED /* XMPPvCardTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XMPPvCardTests.m; path = "../../Testing-Shared/XMPPvCardTests.m"; sourceTree = "<group>"; };
-		D973A0881D2F18310096F3ED /* XMPPSwift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XMPPSwift.swift; path = "../../Testing-Shared/XMPPSwift.swift"; sourceTree = "<group>"; };
-/* End PBXFileReference section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		63F50D8F1C60208100CA0201 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				FDD2AB232C05507F2045FFFC /* Pods_XMPPFrameworkTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
-
-/* Begin PBXGroup section */
-		15070BC7AF8ECBD80D9EE730 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				5CD0B17267211A912DE2098E /* Pods_XMPPFrameworkTests.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		63F50D931C60208200CA0201 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				63F50D921C60208200CA0201 /* XMPPFrameworkTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		63F50D941C60208200CA0201 /* XMPPFrameworkTests */ = {
-			isa = PBXGroup;
-			children = (
-				D973A0881D2F18310096F3ED /* XMPPSwift.swift */,
-				D973A06F1D2F18040096F3ED /* CapabilitiesHashingTest.m */,
-				D973A0701D2F18040096F3ED /* EncodeDecodeTest.m */,
-				D973A0711D2F18040096F3ED /* XMPPHTTPFileUploadTests.m */,
-				D973A0721D2F18040096F3ED /* XMPPMessageArchiveManagementTests.m */,
-				D973A0731D2F18040096F3ED /* XMPPMockStream.h */,
-				D973A0741D2F18040096F3ED /* XMPPMockStream.m */,
-				D973A0751D2F18040096F3ED /* XMPPMUCLightTests.m */,
-				D973A0761D2F18040096F3ED /* XMPPPushTests.swift */,
-				D973A0771D2F18040096F3ED /* XMPPRoomLightCoreDataStorageTests.m */,
-				D973A0781D2F18040096F3ED /* XMPPRoomLightTests.m */,
-				D973A0791D2F18040096F3ED /* XMPPStorageHintTests.m */,
-				D973A07A1D2F18040096F3ED /* XMPPURITests.m */,
-				D973A07B1D2F18040096F3ED /* XMPPvCardTests.m */,
-				63F50D971C60208200CA0201 /* Info.plist */,
-				D973A06E1D2F18030096F3ED /* XMPPFrameworkTests-Bridging-Header.h */,
-			);
-			path = XMPPFrameworkTests;
-			sourceTree = "<group>";
-		};
-		63F55A521C60204300438CE2 = {
-			isa = PBXGroup;
-			children = (
-				63F50D941C60208200CA0201 /* XMPPFrameworkTests */,
-				63F50D931C60208200CA0201 /* Products */,
-				DF526E7E9ECA495063E3A10A /* Pods */,
-				15070BC7AF8ECBD80D9EE730 /* Frameworks */,
-			);
-			sourceTree = "<group>";
-		};
-		DF526E7E9ECA495063E3A10A /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				0641E7F01A0D0D7EE9AA2ED6 /* Pods-XMPPFrameworkTests.debug.xcconfig */,
-				AE993B61B8D33F0468A9B133 /* Pods-XMPPFrameworkTests.release.xcconfig */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-/* End PBXGroup section */
-
-/* Begin PBXNativeTarget section */
-		63F50D911C60208100CA0201 /* XMPPFrameworkTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 63F50D9A1C60208200CA0201 /* Build configuration list for PBXNativeTarget "XMPPFrameworkTests" */;
-			buildPhases = (
-				1D578D2426C0E3CA24902A13 /* [CP] Check Pods Manifest.lock */,
-				63F50D8E1C60208100CA0201 /* Sources */,
-				63F50D8F1C60208100CA0201 /* Frameworks */,
-				63F50D901C60208100CA0201 /* Resources */,
-				CCA1BE22B534ECFCFCF57023 /* [CP] Embed Pods Frameworks */,
-				72947C0BCD2C8A092200B05D /* [CP] Copy Pods Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = XMPPFrameworkTests;
-			productName = XMPPFrameworkTests;
-			productReference = 63F50D921C60208200CA0201 /* XMPPFrameworkTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-/* End PBXNativeTarget section */
-
-/* Begin PBXProject section */
-		63F55A531C60204300438CE2 /* Project object */ = {
-			isa = PBXProject;
-			attributes = {
-				LastUpgradeCheck = 0730;
-				TargetAttributes = {
-					63F50D911C60208100CA0201 = {
-						CreatedOnToolsVersion = 7.2;
-					};
-				};
-			};
-			buildConfigurationList = 63F55A561C60204300438CE2 /* Build configuration list for PBXProject "XMPPFrameworkTests" */;
-			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
-			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-			);
-			mainGroup = 63F55A521C60204300438CE2;
-			productRefGroup = 63F50D931C60208200CA0201 /* Products */;
-			projectDirPath = "";
-			projectRoot = "";
-			targets = (
-				63F50D911C60208100CA0201 /* XMPPFrameworkTests */,
-			);
-		};
-/* End PBXProject section */
-
-/* Begin PBXResourcesBuildPhase section */
-		63F50D901C60208100CA0201 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		1D578D2426C0E3CA24902A13 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		72947C0BCD2C8A092200B05D /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		CCA1BE22B534ECFCFCF57023 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
-/* Begin PBXSourcesBuildPhase section */
-		63F50D8E1C60208100CA0201 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				D973A07C1D2F18040096F3ED /* CapabilitiesHashingTest.m in Sources */,
-				D973A0811D2F18040096F3ED /* XMPPMUCLightTests.m in Sources */,
-				D973A07D1D2F18040096F3ED /* EncodeDecodeTest.m in Sources */,
-				D973A0831D2F18040096F3ED /* XMPPRoomLightCoreDataStorageTests.m in Sources */,
-				D973A0801D2F18040096F3ED /* XMPPMockStream.m in Sources */,
-				D973A0841D2F18040096F3ED /* XMPPRoomLightTests.m in Sources */,
-				D973A0861D2F18040096F3ED /* XMPPURITests.m in Sources */,
-				D973A07F1D2F18040096F3ED /* XMPPMessageArchiveManagementTests.m in Sources */,
-				D973A07E1D2F18040096F3ED /* XMPPHTTPFileUploadTests.m in Sources */,
-				D973A0821D2F18040096F3ED /* XMPPPushTests.swift in Sources */,
-				D973A0851D2F18040096F3ED /* XMPPStorageHintTests.m in Sources */,
-				D973A0891D2F18310096F3ED /* XMPPSwift.swift in Sources */,
-				D973A0871D2F18040096F3ED /* XMPPvCardTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXSourcesBuildPhase section */
-
-/* Begin XCBuildConfiguration section */
-		63F50D981C60208200CA0201 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0641E7F01A0D0D7EE9AA2ED6 /* Pods-XMPPFrameworkTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = XMPPFrameworkTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.davidchiles.XMPPFrameworkTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "XMPPFrameworkTests/XMPPFrameworkTests-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-			};
-			name = Debug;
-		};
-		63F50D991C60208200CA0201 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AE993B61B8D33F0468A9B133 /* Pods-XMPPFrameworkTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_FILE = XMPPFrameworkTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.davidchiles.XMPPFrameworkTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SWIFT_OBJC_BRIDGING_HEADER = "XMPPFrameworkTests/XMPPFrameworkTests-Bridging-Header.h";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		63F55A571C60204300438CE2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ENABLE_TESTABILITY = YES;
-				ONLY_ACTIVE_ARCH = YES;
-			};
-			name = Debug;
-		};
-		63F55A581C60204300438CE2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
-		};
-/* End XCBuildConfiguration section */
-
-/* Begin XCConfigurationList section */
-		63F50D9A1C60208200CA0201 /* Build configuration list for PBXNativeTarget "XMPPFrameworkTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				63F50D981C60208200CA0201 /* Debug */,
-				63F50D991C60208200CA0201 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		63F55A561C60204300438CE2 /* Build configuration list for PBXProject "XMPPFrameworkTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				63F55A571C60204300438CE2 /* Debug */,
-				63F55A581C60204300438CE2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-/* End XCConfigurationList section */
-	};
-	rootObject = 63F55A531C60204300438CE2 /* Project object */;
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>archiveVersion</key>
+	<string>1</string>
+	<key>classes</key>
+	<dict/>
+	<key>objectVersion</key>
+	<string>46</string>
+	<key>objects</key>
+	<dict>
+		<key>0641E7F01A0D0D7EE9AA2ED6</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-XMPPFrameworkTests.debug.xcconfig</string>
+			<key>path</key>
+			<string>Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests.debug.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>15070BC7AF8ECBD80D9EE730</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>5CD0B17267211A912DE2098E</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Frameworks</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>1D578D2426C0E3CA24902A13</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Check Pods Manifest.lock</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>diff "${PODS_ROOT}/../Podfile.lock" "${PODS_ROOT}/Manifest.lock" &gt; /dev/null
+if [[ $? != 0 ]] ; then
+    cat &lt;&lt; EOM
+error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.
+EOM
+    exit 1
+fi
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>5CD0B17267211A912DE2098E</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.framework</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>Pods_XMPPFrameworkTests.framework</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>63F50D8E1C60208100CA0201</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>D973A07C1D2F18040096F3ED</string>
+				<string>D973A0811D2F18040096F3ED</string>
+				<string>D973A07D1D2F18040096F3ED</string>
+				<string>D973A0831D2F18040096F3ED</string>
+				<string>D973A0801D2F18040096F3ED</string>
+				<string>D973A0841D2F18040096F3ED</string>
+				<string>D973A0861D2F18040096F3ED</string>
+				<string>D973A07F1D2F18040096F3ED</string>
+				<string>D973A07E1D2F18040096F3ED</string>
+				<string>D973A0821D2F18040096F3ED</string>
+				<string>D973A0851D2F18040096F3ED</string>
+				<string>D973A0891D2F18310096F3ED</string>
+				<string>D973A0871D2F18040096F3ED</string>
+			</array>
+			<key>isa</key>
+			<string>PBXSourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>63F50D8F1C60208100CA0201</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array>
+				<string>FDD2AB232C05507F2045FFFC</string>
+			</array>
+			<key>isa</key>
+			<string>PBXFrameworksBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>63F50D901C60208100CA0201</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXResourcesBuildPhase</string>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+		</dict>
+		<key>63F50D911C60208100CA0201</key>
+		<dict>
+			<key>buildConfigurationList</key>
+			<string>63F50D9A1C60208200CA0201</string>
+			<key>buildPhases</key>
+			<array>
+				<string>1D578D2426C0E3CA24902A13</string>
+				<string>63F50D8E1C60208100CA0201</string>
+				<string>63F50D8F1C60208100CA0201</string>
+				<string>63F50D901C60208100CA0201</string>
+				<string>CCA1BE22B534ECFCFCF57023</string>
+				<string>72947C0BCD2C8A092200B05D</string>
+				<string>9BAAC5E7EE87A8C1E7F23021</string>
+			</array>
+			<key>buildRules</key>
+			<array/>
+			<key>dependencies</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXNativeTarget</string>
+			<key>name</key>
+			<string>XMPPFrameworkTests</string>
+			<key>productName</key>
+			<string>XMPPFrameworkTests</string>
+			<key>productReference</key>
+			<string>63F50D921C60208200CA0201</string>
+			<key>productType</key>
+			<string>com.apple.product-type.bundle.unit-test</string>
+		</dict>
+		<key>63F50D921C60208200CA0201</key>
+		<dict>
+			<key>explicitFileType</key>
+			<string>wrapper.cfbundle</string>
+			<key>includeInIndex</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>path</key>
+			<string>XMPPFrameworkTests.xctest</string>
+			<key>sourceTree</key>
+			<string>BUILT_PRODUCTS_DIR</string>
+		</dict>
+		<key>63F50D931C60208200CA0201</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>63F50D921C60208200CA0201</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Products</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>63F50D941C60208200CA0201</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>D973A0881D2F18310096F3ED</string>
+				<string>D973A06F1D2F18040096F3ED</string>
+				<string>D973A0701D2F18040096F3ED</string>
+				<string>D973A0711D2F18040096F3ED</string>
+				<string>D973A0721D2F18040096F3ED</string>
+				<string>D973A0731D2F18040096F3ED</string>
+				<string>D973A0741D2F18040096F3ED</string>
+				<string>D973A0751D2F18040096F3ED</string>
+				<string>D973A0761D2F18040096F3ED</string>
+				<string>D973A0771D2F18040096F3ED</string>
+				<string>D973A0781D2F18040096F3ED</string>
+				<string>D973A0791D2F18040096F3ED</string>
+				<string>D973A07A1D2F18040096F3ED</string>
+				<string>D973A07B1D2F18040096F3ED</string>
+				<string>63F50D971C60208200CA0201</string>
+				<string>D973A06E1D2F18030096F3ED</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>path</key>
+			<string>XMPPFrameworkTests</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>63F50D971C60208200CA0201</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.plist.xml</string>
+			<key>path</key>
+			<string>Info.plist</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>63F50D981C60208200CA0201</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>0641E7F01A0D0D7EE9AA2ED6</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
+				<string>gnu++0x</string>
+				<key>CLANG_CXX_LIBRARY</key>
+				<string>libc++</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CLANG_ENABLE_OBJC_ARC</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BOOL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_EMPTY_BODY</key>
+				<string>YES</string>
+				<key>CLANG_WARN_ENUM_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_UNREACHABLE_CODE</key>
+				<string>YES</string>
+				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
+				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
+				<string>iPhone Developer</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>NO</string>
+				<key>DEBUG_INFORMATION_FORMAT</key>
+				<string>dwarf</string>
+				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
+				<string>YES</string>
+				<key>ENABLE_TESTABILITY</key>
+				<string>YES</string>
+				<key>GCC_C_LANGUAGE_STANDARD</key>
+				<string>gnu99</string>
+				<key>GCC_DYNAMIC_NO_PIC</key>
+				<string>NO</string>
+				<key>GCC_NO_COMMON_BLOCKS</key>
+				<string>YES</string>
+				<key>GCC_OPTIMIZATION_LEVEL</key>
+				<string>0</string>
+				<key>GCC_PREPROCESSOR_DEFINITIONS</key>
+				<array>
+					<string>DEBUG=1</string>
+					<string>$(inherited)</string>
+				</array>
+				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
+				<string>YES</string>
+				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
+				<string>YES_ERROR</string>
+				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
+				<string>YES_AGGRESSIVE</string>
+				<key>GCC_WARN_UNUSED_FUNCTION</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNUSED_VARIABLE</key>
+				<string>YES</string>
+				<key>INFOPLIST_FILE</key>
+				<string>XMPPFrameworkTests/Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>9.2</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks @loader_path/Frameworks</string>
+				<key>MTL_ENABLE_DEBUG_INFO</key>
+				<string>YES</string>
+				<key>ONLY_ACTIVE_ARCH</key>
+				<string>YES</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.davidchiles.XMPPFrameworkTests</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>SWIFT_OBJC_BRIDGING_HEADER</key>
+				<string>XMPPFrameworkTests/XMPPFrameworkTests-Bridging-Header.h</string>
+				<key>SWIFT_OPTIMIZATION_LEVEL</key>
+				<string>-Onone</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>63F50D991C60208200CA0201</key>
+		<dict>
+			<key>baseConfigurationReference</key>
+			<string>AE993B61B8D33F0468A9B133</string>
+			<key>buildSettings</key>
+			<dict>
+				<key>ALWAYS_SEARCH_USER_PATHS</key>
+				<string>NO</string>
+				<key>CLANG_CXX_LANGUAGE_STANDARD</key>
+				<string>gnu++0x</string>
+				<key>CLANG_CXX_LIBRARY</key>
+				<string>libc++</string>
+				<key>CLANG_ENABLE_MODULES</key>
+				<string>YES</string>
+				<key>CLANG_ENABLE_OBJC_ARC</key>
+				<string>YES</string>
+				<key>CLANG_WARN_BOOL_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_CONSTANT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_DIRECT_OBJC_ISA_USAGE</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_EMPTY_BODY</key>
+				<string>YES</string>
+				<key>CLANG_WARN_ENUM_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_INT_CONVERSION</key>
+				<string>YES</string>
+				<key>CLANG_WARN_OBJC_ROOT_CLASS</key>
+				<string>YES_ERROR</string>
+				<key>CLANG_WARN_UNREACHABLE_CODE</key>
+				<string>YES</string>
+				<key>CLANG_WARN__DUPLICATE_METHOD_MATCH</key>
+				<string>YES</string>
+				<key>CODE_SIGN_IDENTITY[sdk=iphoneos*]</key>
+				<string>iPhone Developer</string>
+				<key>COPY_PHASE_STRIP</key>
+				<string>NO</string>
+				<key>DEBUG_INFORMATION_FORMAT</key>
+				<string>dwarf-with-dsym</string>
+				<key>ENABLE_NS_ASSERTIONS</key>
+				<string>NO</string>
+				<key>ENABLE_STRICT_OBJC_MSGSEND</key>
+				<string>YES</string>
+				<key>GCC_C_LANGUAGE_STANDARD</key>
+				<string>gnu99</string>
+				<key>GCC_NO_COMMON_BLOCKS</key>
+				<string>YES</string>
+				<key>GCC_WARN_64_TO_32_BIT_CONVERSION</key>
+				<string>YES</string>
+				<key>GCC_WARN_ABOUT_RETURN_TYPE</key>
+				<string>YES_ERROR</string>
+				<key>GCC_WARN_UNDECLARED_SELECTOR</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNINITIALIZED_AUTOS</key>
+				<string>YES_AGGRESSIVE</string>
+				<key>GCC_WARN_UNUSED_FUNCTION</key>
+				<string>YES</string>
+				<key>GCC_WARN_UNUSED_VARIABLE</key>
+				<string>YES</string>
+				<key>INFOPLIST_FILE</key>
+				<string>XMPPFrameworkTests/Info.plist</string>
+				<key>IPHONEOS_DEPLOYMENT_TARGET</key>
+				<string>9.2</string>
+				<key>LD_RUNPATH_SEARCH_PATHS</key>
+				<string>$(inherited) @executable_path/Frameworks @loader_path/Frameworks</string>
+				<key>MTL_ENABLE_DEBUG_INFO</key>
+				<string>NO</string>
+				<key>PRODUCT_BUNDLE_IDENTIFIER</key>
+				<string>com.davidchiles.XMPPFrameworkTests</string>
+				<key>PRODUCT_NAME</key>
+				<string>$(TARGET_NAME)</string>
+				<key>SDKROOT</key>
+				<string>iphoneos</string>
+				<key>SWIFT_OBJC_BRIDGING_HEADER</key>
+				<string>XMPPFrameworkTests/XMPPFrameworkTests-Bridging-Header.h</string>
+				<key>VALIDATE_PRODUCT</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>63F50D9A1C60208200CA0201</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>63F50D981C60208200CA0201</string>
+				<string>63F50D991C60208200CA0201</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>63F55A521C60204300438CE2</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>63F50D941C60208200CA0201</string>
+				<string>63F50D931C60208200CA0201</string>
+				<string>DF526E7E9ECA495063E3A10A</string>
+				<string>15070BC7AF8ECBD80D9EE730</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>63F55A531C60204300438CE2</key>
+		<dict>
+			<key>attributes</key>
+			<dict>
+				<key>LastUpgradeCheck</key>
+				<string>0730</string>
+				<key>TargetAttributes</key>
+				<dict>
+					<key>63F50D911C60208100CA0201</key>
+					<dict>
+						<key>CreatedOnToolsVersion</key>
+						<string>7.2</string>
+					</dict>
+				</dict>
+			</dict>
+			<key>buildConfigurationList</key>
+			<string>63F55A561C60204300438CE2</string>
+			<key>compatibilityVersion</key>
+			<string>Xcode 3.2</string>
+			<key>developmentRegion</key>
+			<string>English</string>
+			<key>hasScannedForEncodings</key>
+			<string>0</string>
+			<key>isa</key>
+			<string>PBXProject</string>
+			<key>knownRegions</key>
+			<array>
+				<string>en</string>
+			</array>
+			<key>mainGroup</key>
+			<string>63F55A521C60204300438CE2</string>
+			<key>productRefGroup</key>
+			<string>63F50D931C60208200CA0201</string>
+			<key>projectDirPath</key>
+			<string></string>
+			<key>projectReferences</key>
+			<array/>
+			<key>projectRoot</key>
+			<string></string>
+			<key>targets</key>
+			<array>
+				<string>63F50D911C60208100CA0201</string>
+			</array>
+		</dict>
+		<key>63F55A561C60204300438CE2</key>
+		<dict>
+			<key>buildConfigurations</key>
+			<array>
+				<string>63F55A571C60204300438CE2</string>
+				<string>63F55A581C60204300438CE2</string>
+			</array>
+			<key>defaultConfigurationIsVisible</key>
+			<string>0</string>
+			<key>defaultConfigurationName</key>
+			<string>Release</string>
+			<key>isa</key>
+			<string>XCConfigurationList</string>
+		</dict>
+		<key>63F55A571C60204300438CE2</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict>
+				<key>ENABLE_TESTABILITY</key>
+				<string>YES</string>
+				<key>ONLY_ACTIVE_ARCH</key>
+				<string>YES</string>
+			</dict>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Debug</string>
+		</dict>
+		<key>63F55A581C60204300438CE2</key>
+		<dict>
+			<key>buildSettings</key>
+			<dict/>
+			<key>isa</key>
+			<string>XCBuildConfiguration</string>
+			<key>name</key>
+			<string>Release</string>
+		</dict>
+		<key>72947C0BCD2C8A092200B05D</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Copy Pods Resources</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${SRCROOT}/Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests-resources.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>9BAAC5E7EE87A8C1E7F23021</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>Embed Pods Frameworks</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${SRCROOT}/Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests-frameworks.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>AE993B61B8D33F0468A9B133</key>
+		<dict>
+			<key>includeInIndex</key>
+			<string>1</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>text.xcconfig</string>
+			<key>name</key>
+			<string>Pods-XMPPFrameworkTests.release.xcconfig</string>
+			<key>path</key>
+			<string>Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests.release.xcconfig</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>CCA1BE22B534ECFCFCF57023</key>
+		<dict>
+			<key>buildActionMask</key>
+			<string>2147483647</string>
+			<key>files</key>
+			<array/>
+			<key>inputPaths</key>
+			<array/>
+			<key>isa</key>
+			<string>PBXShellScriptBuildPhase</string>
+			<key>name</key>
+			<string>[CP] Embed Pods Frameworks</string>
+			<key>outputPaths</key>
+			<array/>
+			<key>runOnlyForDeploymentPostprocessing</key>
+			<string>0</string>
+			<key>shellPath</key>
+			<string>/bin/sh</string>
+			<key>shellScript</key>
+			<string>"${SRCROOT}/Pods/Target Support Files/Pods-XMPPFrameworkTests/Pods-XMPPFrameworkTests-frameworks.sh"
+</string>
+			<key>showEnvVarsInLog</key>
+			<string>0</string>
+		</dict>
+		<key>D973A06E1D2F18030096F3ED</key>
+		<dict>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>path</key>
+			<string>XMPPFrameworkTests-Bridging-Header.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A06F1D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>CapabilitiesHashingTest.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/CapabilitiesHashingTest.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0701D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>EncodeDecodeTest.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/EncodeDecodeTest.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0711D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPHTTPFileUploadTests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPHTTPFileUploadTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0721D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPMessageArchiveManagementTests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPMessageArchiveManagementTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0731D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.h</string>
+			<key>name</key>
+			<string>XMPPMockStream.h</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPMockStream.h</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0741D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPMockStream.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPMockStream.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0751D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPMUCLightTests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPMUCLightTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0761D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>name</key>
+			<string>XMPPPushTests.swift</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPPushTests.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0771D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPRoomLightCoreDataStorageTests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPRoomLightCoreDataStorageTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0781D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPRoomLightTests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPRoomLightTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0791D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPStorageHintTests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPStorageHintTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A07A1D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPURITests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPURITests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A07B1D2F18040096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.c.objc</string>
+			<key>name</key>
+			<string>XMPPvCardTests.m</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPvCardTests.m</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A07C1D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A06F1D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A07D1D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0701D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A07E1D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0711D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A07F1D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0721D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0801D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0741D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0811D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0751D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0821D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0761D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0831D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0771D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0841D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0781D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0851D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0791D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0861D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A07A1D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0871D2F18040096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A07B1D2F18040096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>D973A0881D2F18310096F3ED</key>
+		<dict>
+			<key>fileEncoding</key>
+			<string>4</string>
+			<key>isa</key>
+			<string>PBXFileReference</string>
+			<key>lastKnownFileType</key>
+			<string>sourcecode.swift</string>
+			<key>name</key>
+			<string>XMPPSwift.swift</string>
+			<key>path</key>
+			<string>../../Testing-Shared/XMPPSwift.swift</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>D973A0891D2F18310096F3ED</key>
+		<dict>
+			<key>fileRef</key>
+			<string>D973A0881D2F18310096F3ED</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+		<key>DF526E7E9ECA495063E3A10A</key>
+		<dict>
+			<key>children</key>
+			<array>
+				<string>0641E7F01A0D0D7EE9AA2ED6</string>
+				<string>AE993B61B8D33F0468A9B133</string>
+			</array>
+			<key>isa</key>
+			<string>PBXGroup</string>
+			<key>name</key>
+			<string>Pods</string>
+			<key>sourceTree</key>
+			<string>&lt;group&gt;</string>
+		</dict>
+		<key>FDD2AB232C05507F2045FFFC</key>
+		<dict>
+			<key>fileRef</key>
+			<string>5CD0B17267211A912DE2098E</string>
+			<key>isa</key>
+			<string>PBXBuildFile</string>
+		</dict>
+	</dict>
+	<key>rootObject</key>
+	<string>63F55A531C60204300438CE2</string>
+</dict>
+</plist>
