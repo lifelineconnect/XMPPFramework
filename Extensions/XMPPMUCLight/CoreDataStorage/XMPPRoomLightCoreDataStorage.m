@@ -25,10 +25,10 @@
 
 - (void)handleIncomingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room{
 	XMPPStream *xmppStream = room.xmppStream;
-	
+
 	XMPPJID *roomFromUser = [XMPPJID jidWithString:[message from].resource];
 	XMPPJID *myUser = [room.xmppStream myJID];
-	
+
 	// Ignore - if message is mine and it was not delayed then ignore
 	// becuase we handled it in handleOutgoingMessage:room:
 	if([roomFromUser isEqualToJID:myUser options:XMPPJIDCompareBare] && ![message wasDelayed]) {

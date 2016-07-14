@@ -15,6 +15,7 @@
 		C12017D61D3537DF0054B254 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C12017D41D3537DF0054B254 /* LaunchScreen.storyboard */; };
 		C12017DE1D353B330054B254 /* XMPPController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017DD1D353B330054B254 /* XMPPController.swift */; };
 		C12017E01D3552880054B254 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017DF1D3552880054B254 /* LogInViewController.swift */; };
+		C12018001D37D3060054B254 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017FF1D37D3060054B254 /* InputView.swift */; };
 		E05DB8771D368708006F1D3C /* UIAlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05DB8761D368708006F1D3C /* UIAlertController+Extension.swift */; };
 		E05DB8791D3688CE006F1D3C /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05DB8781D3688CE006F1D3C /* ChatTableViewController.swift */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,7 @@
 		C12017D71D3537DF0054B254 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C12017DD1D353B330054B254 /* XMPPController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMPPController.swift; sourceTree = "<group>"; };
 		C12017DF1D3552880054B254 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
+		C12017FF1D37D3060054B254 /* InputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputView.swift; path = ../InputView.swift; sourceTree = "<group>"; };
 		E05DB8761D368708006F1D3C /* UIAlertController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Extension.swift"; sourceTree = "<group>"; };
 		E05DB8781D3688CE006F1D3C /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -79,6 +81,7 @@
 		C12017CA1D3537DF0054B254 /* MUCLight */ = {
 			isa = PBXGroup;
 			children = (
+				C12017FF1D37D3060054B254 /* InputView.swift */,
 				C12017CB1D3537DF0054B254 /* AppDelegate.swift */,
 				C12017CD1D3537DF0054B254 /* ViewController.swift */,
 				C12017CF1D3537DF0054B254 /* Main.storyboard */,
@@ -223,6 +226,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C12017E01D3552880054B254 /* LogInViewController.swift in Sources */,
+				C12018001D37D3060054B254 /* InputView.swift in Sources */,
 				E05DB8771D368708006F1D3C /* UIAlertController+Extension.swift in Sources */,
 				C12017CE1D3537DF0054B254 /* ViewController.swift in Sources */,
 				C12017CC1D3537DF0054B254 /* AppDelegate.swift in Sources */,

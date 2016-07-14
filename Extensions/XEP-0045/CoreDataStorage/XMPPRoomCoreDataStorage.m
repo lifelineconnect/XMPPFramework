@@ -969,6 +969,15 @@ static XMPPRoomCoreDataStorage *sharedInstance;
 		}
 	}
 	
+//	if ([myRoomJID isEqualToJID:messageJID])
+//	{
+//		if (![message wasDelayed])
+//		{
+//			// Ignore - we already stored message in handleOutgoingMessage:room:
+//			return;
+//		}
+//	}
+	
 	XMPPStream *xmppStream = room.xmppStream;
 	
 	[self scheduleBlock:^{
