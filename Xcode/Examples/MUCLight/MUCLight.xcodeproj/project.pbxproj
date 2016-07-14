@@ -16,6 +16,7 @@
 		C12017DE1D353B330054B254 /* XMPPController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017DD1D353B330054B254 /* XMPPController.swift */; };
 		C12017E01D3552880054B254 /* LogInViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017DF1D3552880054B254 /* LogInViewController.swift */; };
 		C12018001D37D3060054B254 /* InputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017FF1D37D3060054B254 /* InputView.swift */; };
+		C15246461D3817CA00A2DE3E /* ChatTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15246451D3817CA00A2DE3E /* ChatTableViewCell.swift */; };
 		E05DB8771D368708006F1D3C /* UIAlertController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05DB8761D368708006F1D3C /* UIAlertController+Extension.swift */; };
 		E05DB8791D3688CE006F1D3C /* ChatTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E05DB8781D3688CE006F1D3C /* ChatTableViewController.swift */; };
 /* End PBXBuildFile section */
@@ -33,8 +34,9 @@
 		C12017D71D3537DF0054B254 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C12017DD1D353B330054B254 /* XMPPController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMPPController.swift; sourceTree = "<group>"; };
 		C12017DF1D3552880054B254 /* LogInViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogInViewController.swift; sourceTree = "<group>"; };
-		C12017FF1D37D3060054B254 /* InputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputView.swift; path = ../InputView.swift; sourceTree = "<group>"; };
-		E05DB8761D368708006F1D3C /* UIAlertController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIAlertController+Extension.swift"; sourceTree = "<group>"; };
+		C12017FF1D37D3060054B254 /* InputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InputView.swift; path = "../Custom Views/InputView.swift"; sourceTree = "<group>"; };
+		C15246451D3817CA00A2DE3E /* ChatTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewCell.swift; sourceTree = "<group>"; };
+		E05DB8761D368708006F1D3C /* UIAlertController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIAlertController+Extension.swift"; path = "../Extensions/UIAlertController+Extension.swift"; sourceTree = "<group>"; };
 		E05DB8781D3688CE006F1D3C /* ChatTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,11 +60,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		C10318171D3815560059F684 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				C12017CD1D3537DF0054B254 /* ViewController.swift */,
+				C12017DF1D3552880054B254 /* LogInViewController.swift */,
+				E05DB8781D3688CE006F1D3C /* ChatTableViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 		C12017BF1D3537DE0054B254 = {
 			isa = PBXGroup;
 			children = (
-				C12017DD1D353B330054B254 /* XMPPController.swift */,
-				E05DB8761D368708006F1D3C /* UIAlertController+Extension.swift */,
 				C12017CA1D3537DF0054B254 /* MUCLight */,
 				C12017C91D3537DE0054B254 /* Products */,
 				C98CD0A4961D81770E95DB16 /* Pods */,
@@ -81,17 +91,42 @@
 		C12017CA1D3537DF0054B254 /* MUCLight */ = {
 			isa = PBXGroup;
 			children = (
-				C12017FF1D37D3060054B254 /* InputView.swift */,
-				C12017CB1D3537DF0054B254 /* AppDelegate.swift */,
-				C12017CD1D3537DF0054B254 /* ViewController.swift */,
-				C12017CF1D3537DF0054B254 /* Main.storyboard */,
 				C12017D21D3537DF0054B254 /* Assets.xcassets */,
+				C12017CB1D3537DF0054B254 /* AppDelegate.swift */,
+				C12017DD1D353B330054B254 /* XMPPController.swift */,
+				C10318171D3815560059F684 /* ViewControllers */,
+				C15246421D38168300A2DE3E /* Extensions */,
+				C15246431D3816B600A2DE3E /* Custom Views */,
+				C15246441D38179D00A2DE3E /* Custom Cells */,
+				C12017CF1D3537DF0054B254 /* Main.storyboard */,
 				C12017D41D3537DF0054B254 /* LaunchScreen.storyboard */,
 				C12017D71D3537DF0054B254 /* Info.plist */,
-				C12017DF1D3552880054B254 /* LogInViewController.swift */,
-				E05DB8781D3688CE006F1D3C /* ChatTableViewController.swift */,
 			);
 			path = MUCLight;
+			sourceTree = "<group>";
+		};
+		C15246421D38168300A2DE3E /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E05DB8761D368708006F1D3C /* UIAlertController+Extension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		C15246431D3816B600A2DE3E /* Custom Views */ = {
+			isa = PBXGroup;
+			children = (
+				C12017FF1D37D3060054B254 /* InputView.swift */,
+			);
+			path = "Custom Views";
+			sourceTree = "<group>";
+		};
+		C15246441D38179D00A2DE3E /* Custom Cells */ = {
+			isa = PBXGroup;
+			children = (
+				C15246451D3817CA00A2DE3E /* ChatTableViewCell.swift */,
+			);
+			path = "Custom Cells";
 			sourceTree = "<group>";
 		};
 		C98CD0A4961D81770E95DB16 /* Pods */ = {
@@ -230,6 +265,7 @@
 				E05DB8771D368708006F1D3C /* UIAlertController+Extension.swift in Sources */,
 				C12017CE1D3537DF0054B254 /* ViewController.swift in Sources */,
 				C12017CC1D3537DF0054B254 /* AppDelegate.swift in Sources */,
+				C15246461D3817CA00A2DE3E /* ChatTableViewCell.swift in Sources */,
 				C12017DE1D353B330054B254 /* XMPPController.swift in Sources */,
 				E05DB8791D3688CE006F1D3C /* ChatTableViewController.swift in Sources */,
 			);

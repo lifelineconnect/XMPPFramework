@@ -20,6 +20,9 @@ class ChatTableViewController: UITableViewController {
         super.viewDidLoad()
 		self.title = roomLight.roomname()
 		
+		self.tableView.estimatedRowHeight = 50
+		self.tableView.rowHeight = UITableViewAutomaticDimension
+		
 		self.fetchedResultsController = self.createFetchedResultsController()
 		self.chatInputView.delegate = self
     }
@@ -82,10 +85,10 @@ extension ChatTableViewController {
 	}
 	
 	override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-		let cell = self.tableView.dequeueReusableCellWithIdentifier("ChatCellIdentifier")!
+		let cell = self.tableView.dequeueReusableCellWithIdentifier("ChatCellIdentifierCustom") as! ChatTableViewCell
 		let message = self.fetchedResultsController.objectAtIndexPath(indexPath) as! XMPPRoomLightMessageCoreDataStorageObject
-		cell.textLabel?.text = message.streamBareJidStr
-		cell.detailTextLabel?.text = message.body
+		cell.userLabel.text = message.streamBareJidStr
+		cell.bodyLabel.text = message.body
 		cell.backgroundColor = message.isFromMe ? UIColor.whiteColor() : UIColor(red: 246.0/255.0, green: 232/255.0, blue: 234/255.0, alpha: 1.0)
 		return cell
 	}
