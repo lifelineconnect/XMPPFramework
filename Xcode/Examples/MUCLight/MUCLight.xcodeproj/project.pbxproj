@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6EF28188CE55B19ECB701BD2 /* Pods_MUCLight.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E809895714348A7CFBCA129 /* Pods_MUCLight.framework */; };
+		C10FCD711D3923A400853F84 /* RoomDetailsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10FCD701D3923A400853F84 /* RoomDetailsTableViewController.swift */; };
 		C12017CC1D3537DF0054B254 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017CB1D3537DF0054B254 /* AppDelegate.swift */; };
 		C12017CE1D3537DF0054B254 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C12017CD1D3537DF0054B254 /* ViewController.swift */; };
 		C12017D11D3537DF0054B254 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C12017CF1D3537DF0054B254 /* Main.storyboard */; };
@@ -25,6 +26,7 @@
 		186B239960F1B4F4C7D35C0F /* Pods-MUCLight.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MUCLight.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MUCLight/Pods-MUCLight.debug.xcconfig"; sourceTree = "<group>"; };
 		4E809895714348A7CFBCA129 /* Pods_MUCLight.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MUCLight.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		731C1EA007E2CFD3851A10CC /* Pods-MUCLight.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MUCLight.release.xcconfig"; path = "Pods/Target Support Files/Pods-MUCLight/Pods-MUCLight.release.xcconfig"; sourceTree = "<group>"; };
+		C10FCD701D3923A400853F84 /* RoomDetailsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RoomDetailsTableViewController.swift; sourceTree = "<group>"; };
 		C12017C81D3537DE0054B254 /* MUCLight.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MUCLight.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C12017CB1D3537DF0054B254 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C12017CD1D3537DF0054B254 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -66,6 +68,7 @@
 				C12017CD1D3537DF0054B254 /* ViewController.swift */,
 				C12017DF1D3552880054B254 /* LogInViewController.swift */,
 				E05DB8781D3688CE006F1D3C /* ChatTableViewController.swift */,
+				C10FCD701D3923A400853F84 /* RoomDetailsTableViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				C12017E01D3552880054B254 /* LogInViewController.swift in Sources */,
 				C12018001D37D3060054B254 /* InputView.swift in Sources */,
 				E05DB8771D368708006F1D3C /* UIAlertController+Extension.swift in Sources */,
+				C10FCD711D3923A400853F84 /* RoomDetailsTableViewController.swift in Sources */,
 				C12017CE1D3537DF0054B254 /* ViewController.swift in Sources */,
 				C12017CC1D3537DF0054B254 /* AppDelegate.swift in Sources */,
 				C15246461D3817CA00A2DE3E /* ChatTableViewCell.swift in Sources */,

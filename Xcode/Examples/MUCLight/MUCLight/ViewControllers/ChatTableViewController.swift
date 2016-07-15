@@ -11,21 +11,30 @@ import XMPPFramework
 
 class ChatTableViewController: UITableViewController {
 
+	@IBOutlet weak var buttonNavigationTitle: UIButton!
 	@IBOutlet var chatInputView: InputView!
 	weak var roomLight: XMPPRoomLight!
 	weak var xmppController: XMPPController!
 	var fetchedResultsController: NSFetchedResultsController!
-
+	
     override func viewDidLoad() {
         super.viewDidLoad()
-		self.title = roomLight.roomname()
+		
+		self.buttonNavigationTitle.setTitle(self.roomLight.roomname(), forState: .Normal)
+		self.fetchedResultsController = self.createFetchedResultsController()
+		self.chatInputView.delegate = self
+		
+		self.roomLight.addDelegate(self, delegateQueue: dispatch_get_main_queue())
 		
 		self.tableView.estimatedRowHeight = 50
 		self.tableView.rowHeight = UITableViewAutomaticDimension
-		
-		self.fetchedResultsController = self.createFetchedResultsController()
-		self.chatInputView.delegate = self
+		self.tableView.tableFooterView = UIView()
     }
+	
+	override func viewWillDisappear(animated: Bool) {
+		super.viewWillAppear(animated)
+		self.roomLight.removeDelegate(self)
+	}
 
 	func createFetchedResultsController() -> NSFetchedResultsController {
 		let groupContext = self.xmppController.xmppRoomLightCoreDataStorage.mainThreadManagedObjectContext
@@ -46,6 +55,14 @@ class ChatTableViewController: UITableViewController {
 
 		return controller
 	}
+	
+	override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+		if segue.identifier == "RoomDetailsTableViewController" {
+			let navController = segue.destinationViewController as! UINavigationController
+			let viewController = navController.viewControllers[0] as! RoomDetailsTableViewController
+			viewController.roomLight = 	self.roomLight
+		}
+	}
 
 	@IBAction func addUserAction(sender: AnyObject) {
 		let alertController = UIAlertController.textFieldAlertController("Invite User", message: nil) { (user) in
@@ -57,7 +74,6 @@ class ChatTableViewController: UITableViewController {
 
 		self.navigationController!.presentViewController(alertController, animated: true, completion: nil)
 	}
-
 }
 
 extension ChatTableViewController: InputViewDelegate {
@@ -92,6 +108,7 @@ extension ChatTableViewController {
 		cell.backgroundColor = message.isFromMe ? UIColor.whiteColor() : UIColor(red: 246.0/255.0, green: 232/255.0, blue: 234/255.0, alpha: 1.0)
 		return cell
 	}
+
 }
 
 extension ChatTableViewController: NSFetchedResultsControllerDelegate {

@@ -29,6 +29,7 @@ class ViewController: UITableViewController {
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
 		self.tableView.allowsMultipleSelectionDuringEditing = false
+		self.tableView.tableFooterView = UIView()
 	}
 
 	override func viewDidAppear(animated: Bool) {

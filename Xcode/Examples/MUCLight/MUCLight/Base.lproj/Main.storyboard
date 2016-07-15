@@ -12,7 +12,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="56" sectionHeaderHeight="28" sectionFooterHeight="28" id="rdu-IJ-Lza">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.81960784310000001" green="0.86274509799999999" blue="0.87843137250000003" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="RoomCellIdentifier" textLabel="v1h-S9-JD4" detailTextLabel="gUL-rI-yWh" rowHeight="56" style="IBUITableViewCellStyleSubtitle" id="oCI-1r-Hus">
                                 <rect key="frame" x="0.0" y="92" width="600" height="56"/>
@@ -61,14 +61,14 @@
             </objects>
             <point key="canvasLocation" x="493" y="434"/>
         </scene>
-        <!--Room Name-->
+        <!--Chat Table View Controller-->
         <scene sceneID="jfZ-0M-XfG">
             <objects>
                 <tableViewController id="iXz-df-f7g" customClass="ChatTableViewController" customModule="MUCLight" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="62" sectionHeaderHeight="28" sectionFooterHeight="28" id="VeY-kc-MMe">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" red="0.81960784310000001" green="0.86274509799999999" blue="0.87843137250000003" alpha="1" colorSpace="calibratedRGB"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ChatCellIdentifierCustom" rowHeight="128" id="Aex-nf-yoT" customClass="ChatTableViewCell" customModule="MUCLight" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="92" width="600" height="128"/>
@@ -114,7 +114,19 @@
                         </connections>
                     </tableView>
                     <toolbarItems/>
-                    <navigationItem key="navigationItem" title="Room Name" id="8HE-7T-Kwr">
+                    <navigationItem key="navigationItem" id="8HE-7T-Kwr">
+                        <nil key="title"/>
+                        <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Y4b-Mr-8Gd">
+                            <rect key="frame" x="180" y="7" width="240" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                            <state key="normal" title="Button">
+                                <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <segue destination="dOn-CB-N6Z" kind="presentation" identifier="RoomDetailsTableViewController" id="2xN-2t-25d"/>
+                            </connections>
+                        </button>
                         <barButtonItem key="rightBarButtonItem" image="add_user" id="3ye-ls-r51">
                             <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             <connections>
@@ -123,6 +135,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="buttonNavigationTitle" destination="Y4b-Mr-8Gd" id="EmP-HV-idC"/>
                         <outlet property="chatInputView" destination="Hhd-LV-6nP" id="Yzh-F0-Azd"/>
                     </connections>
                 </tableViewController>
@@ -181,6 +194,75 @@
                 </view>
             </objects>
             <point key="canvasLocation" x="1206" y="434"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="q7U-Th-kDt">
+            <objects>
+                <navigationController id="dOn-CB-N6Z" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="8jB-83-Dxj">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" red="0.66666666669999997" green="0.1176470588" blue="0.1764705882" alpha="1" colorSpace="calibratedRGB"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="OIX-Sp-JLw" kind="relationship" relationship="rootViewController" id="UbV-vP-2i7"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eOc-Q2-aT8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1206" y="1161"/>
+        </scene>
+        <!--Details-->
+        <scene sceneID="QWe-eJ-B7c">
+            <objects>
+                <tableViewController id="OIX-Sp-JLw" customClass="RoomDetailsTableViewController" customModule="MUCLight" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="65" sectionHeaderHeight="28" sectionFooterHeight="28" id="rxO-nw-4em" customClass="Roo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.81960784310000001" green="0.86274509799999999" blue="0.87843137250000003" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="RoomDetailsCellIdentifier" textLabel="jvW-G8-zIq" detailTextLabel="6Kg-41-EiR" rowHeight="65" style="IBUITableViewCellStyleSubtitle" id="wfK-Am-IeA">
+                                <rect key="frame" x="0.0" y="92" width="600" height="65"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="wfK-Am-IeA" id="ZMD-Uk-E0b">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="64"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="jvW-G8-zIq">
+                                            <rect key="frame" x="15" y="11" width="38" height="24"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="20"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="6Kg-41-EiR">
+                                            <rect key="frame" x="15" y="35" width="39" height="18"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="OIX-Sp-JLw" id="4xY-dg-6DV"/>
+                            <outlet property="delegate" destination="OIX-Sp-JLw" id="yn1-hw-wXF"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Details" id="ekn-0A-VBY">
+                        <barButtonItem key="rightBarButtonItem" title="Close" id="g80-Wy-nnY">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="close:" destination="OIX-Sp-JLw" id="jp4-Jb-Z95"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jdu-VA-K0Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1961" y="1161"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Jnl-Yk-9dt">
