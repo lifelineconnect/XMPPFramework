@@ -21,7 +21,8 @@ class RoomDetailsTableViewController: UITableViewController {
 		
 		let hud = MBProgressHUD.showHUDAddedTo(self.view, animated: true)
 		hud.labelText = "Signing in..."
-
+		
+		self.roomLight.flushVersion()
 		self.roomLight.fetchMembersList()
 	}
 
