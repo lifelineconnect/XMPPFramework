@@ -69,9 +69,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.81960784310000001" green="0.86274509799999999" blue="0.87843137250000003" alpha="1" colorSpace="calibratedRGB"/>
+                        <view key="tableHeaderView" clipsSubviews="YES" contentMode="scaleToFill" id="Kw4-jA-8u2">
+                            <rect key="frame" x="0.0" y="64" width="600" height="30"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="- no subject -" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ah6-TZ-hnz">
+                                    <rect key="frame" x="249" y="5" width="103" height="21"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="21" id="sDE-VK-lgZ"/>
+                                    </constraints>
+                                    <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
+                                    <color key="textColor" red="0.81960784310000001" green="0.86274509799999999" blue="0.87843137250000003" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="ah6-TZ-hnz" firstAttribute="centerY" secondItem="Kw4-jA-8u2" secondAttribute="centerY" id="dIL-78-vgF"/>
+                                <constraint firstItem="ah6-TZ-hnz" firstAttribute="centerX" secondItem="Kw4-jA-8u2" secondAttribute="centerX" id="vPI-S4-uvY"/>
+                            </constraints>
+                        </view>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="ChatCellIdentifierCustom" rowHeight="128" id="Aex-nf-yoT" customClass="ChatTableViewCell" customModule="MUCLight" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="92" width="600" height="128"/>
+                                <rect key="frame" x="0.0" y="122" width="600" height="128"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Aex-nf-yoT" id="XGN-rq-X7c">
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="127"/>
@@ -119,7 +139,7 @@
                         <button key="titleView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Y4b-Mr-8Gd">
                             <rect key="frame" x="180" y="7" width="240" height="30"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <fontDescription key="fontDescription" type="system" weight="medium" pointSize="18"/>
+                            <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                             <state key="normal" title="Button">
                                 <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </state>
@@ -137,6 +157,8 @@
                     <connections>
                         <outlet property="buttonNavigationTitle" destination="Y4b-Mr-8Gd" id="EmP-HV-idC"/>
                         <outlet property="chatInputView" destination="Hhd-LV-6nP" id="Yzh-F0-Azd"/>
+                        <outlet property="roomSubject" destination="ah6-TZ-hnz" id="8En-8A-77K"/>
+                        <outlet property="tableHeaderView" destination="Kw4-jA-8u2" id="tJz-wV-t2q"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jwd-Jz-NIt" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -216,7 +238,7 @@
         <scene sceneID="QWe-eJ-B7c">
             <objects>
                 <tableViewController id="OIX-Sp-JLw" customClass="RoomDetailsTableViewController" customModule="MUCLight" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="65" sectionHeaderHeight="28" sectionFooterHeight="28" id="rxO-nw-4em" customClass="Roo">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="65" sectionHeaderHeight="28" sectionFooterHeight="28" id="rxO-nw-4em">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.81960784310000001" green="0.86274509799999999" blue="0.87843137250000003" alpha="1" colorSpace="calibratedRGB"/>

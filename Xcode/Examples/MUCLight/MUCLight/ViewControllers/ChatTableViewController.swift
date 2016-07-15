@@ -12,7 +12,9 @@ import XMPPFramework
 class ChatTableViewController: UITableViewController {
 
 	@IBOutlet weak var buttonNavigationTitle: UIButton!
+	@IBOutlet weak var roomSubject: UILabel!
 	@IBOutlet var chatInputView: InputView!
+	@IBOutlet weak var tableHeaderView: UIView!
 	weak var roomLight: XMPPRoomLight!
 	weak var xmppController: XMPPController!
 	var fetchedResultsController: NSFetchedResultsController!
@@ -25,11 +27,26 @@ class ChatTableViewController: UITableViewController {
 		self.chatInputView.delegate = self
 		
 		self.roomLight.addDelegate(self, delegateQueue: dispatch_get_main_queue())
+		self.roomLight.getConfiguration()
+
+		let gesture = UITapGestureRecognizer(target: self, action: #selector(self.tappedHeaderView(_:)))
+		self.tableHeaderView.addGestureRecognizer(gesture)
 		
 		self.tableView.estimatedRowHeight = 50
 		self.tableView.rowHeight = UITableViewAutomaticDimension
 		self.tableView.tableFooterView = UIView()
     }
+	
+	func tappedHeaderView(sender: UIGestureRecognizer) {
+		let alertController = UIAlertController.textFieldAlertController("Invite User", message: nil) { (name) in
+			guard let newName = name else { return }
+			self.roomLight.changeRoomSubject(newName)
+			
+			self.becomeFirstResponder()
+		}
+		
+		self.navigationController!.presentViewController(alertController, animated: true, completion: nil)
+	}
 	
 	override func viewWillDisappear(animated: Bool) {
 		super.viewWillAppear(animated)
@@ -74,6 +91,14 @@ class ChatTableViewController: UITableViewController {
 
 		self.navigationController!.presentViewController(alertController, animated: true, completion: nil)
 	}
+	
+	func changeSubject(newSubject: String) {
+		if newSubject.characters.count == 0 {
+			self.roomSubject.text = "- no subject -"
+		} else {
+			self.roomSubject.text = newSubject
+		}
+	}
 }
 
 extension ChatTableViewController: InputViewDelegate {
@@ -89,6 +114,18 @@ extension ChatTableViewController: InputViewDelegate {
 	func sendButtonTouch(text: String) {
 		self.roomLight.sendMessageWithBody(text)
 	}
+}
+
+extension ChatTableViewController: XMPPRoomLightDelegate {
+
+	func xmppRoomLight(sender: XMPPRoomLight, didGetConfiguration iqResult: XMPPIQ) {
+		self.changeSubject(sender.subject())
+	}
+
+	func xmppRoomLight(sender: XMPPRoomLight, didSetConfiguration iqResult: XMPPIQ) {
+		self.changeSubject(sender.subject())
+	}
+
 }
 
 extension ChatTableViewController {
