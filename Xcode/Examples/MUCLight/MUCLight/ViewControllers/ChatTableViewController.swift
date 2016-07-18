@@ -49,7 +49,7 @@ class ChatTableViewController: UITableViewController {
 	}
 	
 	override func viewWillDisappear(animated: Bool) {
-		super.viewWillAppear(animated)
+		super.viewWillDisappear(animated)
 		self.roomLight.removeDelegate(self)
 	}
 
