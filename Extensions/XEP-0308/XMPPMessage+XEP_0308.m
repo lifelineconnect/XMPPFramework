@@ -29,7 +29,7 @@
 
 - (void)addMessageCorrectionWithID:(NSString *)messageCorrectionID
 {
-    NSXMLElement *replace = [NSXMLElement elementWithName:NAME_XMPP_MESSAGE_CORRECT stringValue:XMLNS_XMPP_MESSAGE_CORRECT];
+    NSXMLElement *replace = [NSXMLElement elementWithName:NAME_XMPP_MESSAGE_CORRECT xmlns:XMLNS_XMPP_MESSAGE_CORRECT];
     [replace addAttributeWithName:@"id" stringValue:messageCorrectionID];
     [self addChild:replace];
 }
