@@ -77,7 +77,7 @@
             [correctionMessage removeChildAtIndex:[[correctionMessage children] indexOfObject:bodyElement]];
         }
 
-        [self addBody:body];
+        [correctionMessage addBody:body];
 
         [correctionMessage addMessageCorrectionWithID:[self elementID]];
     }
