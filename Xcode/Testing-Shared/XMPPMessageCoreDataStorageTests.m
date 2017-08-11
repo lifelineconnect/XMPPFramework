@@ -11,7 +11,7 @@
 
 static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectationContext;
 
-@interface XMPPMessageCoreDataStorageTests : XCTestCase
+@interface XMPPMessageCoreDataStorageTests : XCTestCase <XMPPMessageCoreDataStorageCustomContextNodeProvider>
 
 @property (nonatomic, strong) XMPPMessageCoreDataStorage *storage;
 @property (nonatomic, strong) XMPPMessageBaseNode *messageNode;
@@ -27,7 +27,9 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
 {
     [super setUp];
     
-    self.storage = [[XMPPMessageCoreDataStorage alloc] initWithDatabaseFilename:NSStringFromSelector(self.invocation.selector) storeOptions:nil];
+    self.storage = [[XMPPMessageCoreDataStorage alloc] initWithDatabaseFilename:NSStringFromSelector(self.invocation.selector)
+                                                                   storeOptions:nil
+                                                     customContextNodeProviders:@[self]];
     self.storage.autoRemovePreviousDatabaseFile = YES;
     
     self.messageNode = [[XMPPMessageBaseNode alloc] initWithContext:self.storage.mainThreadManagedObjectContext];
@@ -191,6 +193,14 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
     [self waitForExpectationsWithTimeout:0 handler:nil];
 }
 
+- (void)testCustomContextNodeProviding
+{
+    XMPPMessageContextNode *customContextNode = [NSEntityDescription insertNewObjectForEntityForName:@"CustomContextNode" inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [self.messageNode addChildContextNodesObject:customContextNode];
+    
+    XCTAssertEqualObjects(customContextNode.parentMessageNode, self.messageNode);
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
     if (context != KeyValueObservingExpectationContext) {
@@ -199,6 +209,15 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
     }
     
     [self.keyValueObservingExpectation fulfill];
+}
+
+- (void)provideCustomContextNodeEntitiesForBaseEntity:(NSEntityDescription *)baseContextNodeEntity inStorage:(XMPPMessageCoreDataStorage *)storage
+{
+    NSEntityDescription *customContextNodeEntity = [[NSEntityDescription alloc] init];
+    customContextNodeEntity.name = @"CustomContextNode";
+    
+    baseContextNodeEntity.managedObjectModel.entities = [baseContextNodeEntity.managedObjectModel.entities arrayByAddingObject:customContextNodeEntity];
+    baseContextNodeEntity.subentities = [baseContextNodeEntity.subentities arrayByAddingObject:customContextNodeEntity];
 }
 
 @end
