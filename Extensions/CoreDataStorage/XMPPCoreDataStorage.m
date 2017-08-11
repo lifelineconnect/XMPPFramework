@@ -120,6 +120,16 @@ static NSMutableSet *databaseFileNames;
     return defaultStoreOptions;
 }
 
+- (void)willCreatePersistentStoreCoordinator
+{
+    // Override me, if needed, to provide customized behavior.
+    //
+    // This method is queried right before the managed object model is used to create the persistent store coordinator.
+    // It is the last moment to apply any managed object model modifications.
+    //
+    // The default implementation does nothing.
+}
+
 - (void)willCreatePersistentStoreWithPath:(NSString *)storePath options:(NSDictionary *)theStoreOptions
 {
 	// Override me, if needed, to provide customized behavior.
@@ -561,6 +571,8 @@ static NSMutableSet *databaseFileNames;
 			return;
 		}
 		
+        [self willCreatePersistentStoreCoordinator];
+        
 		XMPPLogVerbose(@"%@: Creating persistentStoreCoordinator", [self class]);
 		
 		persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
