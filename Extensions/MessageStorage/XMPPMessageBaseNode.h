@@ -3,12 +3,11 @@
 @class XMPPJID, XMPPMessageContextNode;
 
 typedef NS_ENUM(int16_t, XMPPMessageType) {
-    XMPPMessageTypeUnspecified,
+    XMPPMessageTypeNormal,
     XMPPMessageTypeChat,
     XMPPMessageTypeError,
     XMPPMessageTypeGroupchat,
-    XMPPMessageTypeHeadline,
-    XMPPMessageTypeNormal
+    XMPPMessageTypeHeadline
 };
 
 @interface XMPPMessageBaseNode : NSManagedObject
