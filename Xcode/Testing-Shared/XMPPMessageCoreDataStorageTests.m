@@ -34,7 +34,7 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
     
     self.messageNode = [[XMPPMessageBaseNode alloc] initWithContext:self.storage.mainThreadManagedObjectContext];
     self.streamEventNode = [[XMPPMessageStreamEventNode alloc] initWithContext:self.storage.mainThreadManagedObjectContext];
-    self.streamEventNode.eventID = [NSUUID UUID].UUIDString;
+    self.streamEventNode.eventID = @"eventID";
     self.streamEventNode.parentMessageNode = self.messageNode;
     
     [self.messageNode addObserver:self forKeyPath:@"fromJID" options:0 context:KeyValueObservingExpectationContext];
@@ -200,6 +200,105 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
     [self.messageNode addChildContextNodesObject:customContextNode];
     
     XCTAssertEqualObjects(customContextNode.parentMessageNode, self.messageNode);
+}
+
+- (void)testIncomingMessageStorage
+{
+    NSDictionary<NSString *, NSNumber *> *messageTypes = @{@"chat": @(XMPPMessageTypeChat),
+                                                           @"error": @(XMPPMessageTypeError),
+                                                           @"groupchat": @(XMPPMessageTypeGroupchat),
+                                                           @"headline": @(XMPPMessageTypeHeadline),
+                                                           @"normal": @(XMPPMessageTypeNormal)};
+    
+    for (NSString *typeString in messageTypes) {
+        NSMutableString *messageString = [NSMutableString string];
+        [messageString appendFormat: @"<message from='user1@domain1/resource1' to='user2@domain2/resource2' type='%@' id='messageID'>", typeString];
+        [messageString appendString: @"	 <body>body</body>"];
+        [messageString appendString: @"	 <subject>subject</subject>"];
+        [messageString appendString: @"	 <thread>thread</thread>"];
+        [messageString appendString: @"</message>"];
+        
+        [XMPPMessageBaseNode findOrCreateForIncomingMessage:[[XMPPMessage alloc] initWithXMLString:messageString error:NULL]
+                                              withStreamJID:[XMPPJID jidWithString:@"user2@domain2/resource2"]
+                                              streamEventID:[NSString stringWithFormat:@"eventID_%@", typeString]
+                                     inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        
+        XMPPMessageStreamEventNode *streamEventNode = [XMPPMessageStreamEventNode findWithID:[NSString stringWithFormat:@"eventID_%@", typeString]
+                                                                      inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        XMPPMessageBaseNode *messageNode = streamEventNode.parentMessageNode;
+        
+        XCTAssertNotNil(streamEventNode);
+        XCTAssertNotNil(streamEventNode.timestamp);
+        XCTAssertEqual(streamEventNode.kind, XMPPMessageStreamEventKindIncoming);
+        XCTAssertEqualObjects(streamEventNode.streamJID, [XMPPJID jidWithString:@"user2@domain2/resource2"]);
+        
+        XCTAssertEqualObjects(messageNode.fromJID, [XMPPJID jidWithString:@"user1@domain1/resource1"]);
+        XCTAssertEqualObjects(messageNode.toJID, [XMPPJID jidWithString:@"user2@domain2/resource2"]);
+        XCTAssertEqualObjects(messageNode.body, @"body");
+        XCTAssertEqualObjects(messageNode.stanzaID, @"messageID");
+        XCTAssertEqualObjects(messageNode.subject, @"subject");
+        XCTAssertEqualObjects(messageNode.thread, @"thread");
+        XCTAssertEqual(messageNode.type, messageTypes[typeString].intValue);
+    }
+}
+
+- (void)testIncomingMessageStorageWithExistingStreamEvent
+{
+    XMPPMessageBaseNode *existingNode = [XMPPMessageBaseNode findOrCreateForIncomingMessage:[[XMPPMessage alloc] init]
+                                                                              withStreamJID:[XMPPJID jidWithString:@"user@domain/resource"]
+                                                                              streamEventID:@"eventID"
+                                                                     inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    XCTAssertEqualObjects(existingNode, self.messageNode);
+}
+
+- (void)testOutgoingMessageNodeInsertion
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageToRecipientWithJID:[XMPPJID jidWithString:@"user@domain/resource"]
+                                                                                inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    XCTAssertNotNil(messageNode.stanzaID);
+    XCTAssertEqualObjects(messageNode.toJID, [XMPPJID jidWithString:@"user@domain/resource"]);
+}
+
+- (void)testOutgoingMessageCreation
+{
+    self.messageNode.toJID = [XMPPJID jidWithString:@"user2@domain2/resource2"];
+    self.messageNode.body = @"body";
+    self.messageNode.stanzaID = @"messageID";
+    self.messageNode.subject = @"subject";
+    self.messageNode.thread = @"thread";
+    
+    NSDictionary<NSString *, NSNumber *> *messageTypes = @{@"chat": @(XMPPMessageTypeChat),
+                                                           @"error": @(XMPPMessageTypeError),
+                                                           @"groupchat": @(XMPPMessageTypeGroupchat),
+                                                           @"headline": @(XMPPMessageTypeHeadline),
+                                                           @"normal": @(XMPPMessageTypeNormal)};
+    
+    for (NSString *typeString in messageTypes){
+        self.messageNode.type = messageTypes[typeString].intValue;
+        
+        XMPPMessage *message = [self.messageNode outgoingMessage];
+        
+        XCTAssertEqualObjects([message to], [XMPPJID jidWithString:@"user2@domain2/resource2"]);
+        XCTAssertEqualObjects([message body], @"body");
+        XCTAssertEqualObjects([message elementID], @"messageID");
+        XCTAssertEqualObjects([message subject], @"subject");
+        XCTAssertEqualObjects([message thread], @"thread");
+        XCTAssertEqualObjects([message type], typeString);
+    }
+}
+
+- (void)testOutgoingMessageEventRegistration
+{
+    [self.messageNode registerOutgoingMessageInStreamWithJID:[XMPPJID jidWithString:@"user@domain/resource"] streamEventID:@"registeredEventID"];
+    
+    XMPPMessageStreamEventNode *eventNode = [XMPPMessageStreamEventNode findWithID:@"registeredEventID"
+                                                            inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    
+    XCTAssertNotNil(eventNode);
+    XCTAssertEqualObjects(eventNode.parentMessageNode, self.messageNode);
+    XCTAssertNotNil(eventNode.timestamp);
+    XCTAssertEqual(eventNode.kind, XMPPMessageStreamEventKindOutgoing);
+    XCTAssertEqualObjects(eventNode.streamJID, [XMPPJID jidWithString:@"user@domain/resource"]);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context

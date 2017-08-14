@@ -1,6 +1,8 @@
 #import <CoreData/CoreData.h>
 
-@class XMPPJID, XMPPMessageContextNode;
+NS_ASSUME_NONNULL_BEGIN
+
+@class XMPPJID, XMPPMessage, XMPPMessageContextNode;
 
 typedef NS_ENUM(int16_t, XMPPMessageType) {
     XMPPMessageTypeNormal,
@@ -25,13 +27,25 @@ typedef NS_ENUM(int16_t, XMPPMessageType) {
 @property (nonatomic, strong, nullable) XMPPMessageContextNode *parentContextNode;
 @property (nonatomic, copy, nullable) NSSet<XMPPMessageContextNode *> *childContextNodes;
 
++ (XMPPMessageBaseNode *)findOrCreateForIncomingMessage:(XMPPMessage *)message
+                                          withStreamJID:(XMPPJID *)streamJID
+                                          streamEventID:(NSString *)streamEventID
+                                 inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
++ (XMPPMessageBaseNode *)insertForOutgoingMessageToRecipientWithJID:(XMPPJID *)toJID
+                                             inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
+- (XMPPMessage *)outgoingMessage;
+- (void)registerOutgoingMessageInStreamWithJID:(XMPPJID *)streamJID streamEventID:(NSString *)streamEventID;
+
 @end
 
 @interface XMPPMessageBaseNode (CoreDataGeneratedRelationshipAccesssors)
 
-- (void)addChildContextNodesObject:(nonnull XMPPMessageContextNode *)value;
-- (void)removeChildContextNodesObject:(nonnull XMPPMessageContextNode *)value;
-- (void)addChildContextNodes:(nonnull NSSet<XMPPMessageContextNode *> *)value;
-- (void)removeChildContextNodes:(nonnull NSSet<XMPPMessageContextNode *> *)value;
+- (void)addChildContextNodesObject:(XMPPMessageContextNode *)value;
+- (void)removeChildContextNodesObject:(XMPPMessageContextNode *)value;
+- (void)addChildContextNodes:(NSSet<XMPPMessageContextNode *> *)value;
+- (void)removeChildContextNodes:(NSSet<XMPPMessageContextNode *> *)value;
 
 @end
+
+NS_ASSUME_NONNULL_END

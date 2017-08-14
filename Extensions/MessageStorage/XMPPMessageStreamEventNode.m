@@ -1,5 +1,6 @@
 #import "XMPPMessageStreamEventNode.h"
 #import "XMPPJID.h"
+#import "NSManagedObject+XMPPCoreDataStorage.h"
 
 @interface XMPPMessageStreamEventNode ()
 
@@ -101,6 +102,19 @@
     [self setPrimitiveStreamJID:nil];
     [self didChangeValueForKey:NSStringFromSelector(@selector(streamJID))];
     [self didChangeValueForKey:NSStringFromSelector(@selector(streamUser))];
+}
+
+#pragma mark - Public
+
++ (XMPPMessageStreamEventNode *)findWithID:(NSString *)streamEventID inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    NSFetchRequest *fetchRequest = [self xmpp_fetchRequestInManagedObjectContext:managedObjectContext];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %@", NSStringFromSelector(@selector(eventID)), streamEventID];
+    
+    NSArray *fetchResult = [managedObjectContext xmpp_executeForcedSuccessFetchRequest:fetchRequest];
+    NSAssert(fetchResult.count <= 1, @"Multiple XMPPMessageStreamEventNode instances found for ID");
+    
+    return fetchResult.firstObject;
 }
 
 #pragma mark - Overridden

@@ -1,5 +1,8 @@
 #import "XMPPMessageBaseNode.h"
 #import "XMPPJID.h"
+#import "XMPPMessage.h"
+#import "XMPPMessageStreamEventNode.h"
+#import "NSManagedObject+XMPPCoreDataStorage.h"
 
 @interface XMPPMessageBaseNode ()
 
@@ -190,6 +193,110 @@
     [self setPrimitiveToJID:nil];
     [self didChangeValueForKey:NSStringFromSelector(@selector(toJID))];
     [self didChangeValueForKey:NSStringFromSelector(@selector(toUser))];
+}
+
+#pragma mark - Public
+
++ (XMPPMessageBaseNode *)findOrCreateForIncomingMessage:(XMPPMessage *)message withStreamJID:(XMPPJID *)streamJID streamEventID:(NSString *)streamEventID inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    XMPPMessageStreamEventNode *existingStreamEventNode = [XMPPMessageStreamEventNode findWithID:streamEventID inManagedObjectContext:managedObjectContext];
+    if (existingStreamEventNode) {
+        return existingStreamEventNode.parentMessageNode;
+    }
+    
+    XMPPMessageStreamEventNode *newStreamEventNode = [XMPPMessageStreamEventNode xmpp_insertNewObjectInManagedObjectContext:managedObjectContext];
+    newStreamEventNode.eventID = streamEventID;
+    newStreamEventNode.kind = XMPPMessageStreamEventKindIncoming;
+    newStreamEventNode.streamJID = streamJID;
+    
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:managedObjectContext];
+    messageNode.fromJID = [message from];
+    messageNode.toJID = [message to];
+    messageNode.body = [message body];
+    messageNode.stanzaID = [message elementID];
+    messageNode.subject = [message subject];
+    messageNode.thread = [message thread];
+    
+    if ([[message type] isEqualToString:@"chat"]) {
+        messageNode.type = XMPPMessageTypeChat;
+    } else if ([[message type] isEqualToString:@"error"]) {
+        messageNode.type = XMPPMessageTypeError;
+    } else if ([[message type] isEqualToString:@"groupchat"]) {
+        messageNode.type = XMPPMessageTypeGroupchat;
+    } else if ([[message type] isEqualToString:@"headline"]) {
+        messageNode.type = XMPPMessageTypeHeadline;
+    } else {
+        messageNode.type = XMPPMessageTypeNormal;
+    }
+    
+    [messageNode addChildContextNodesObject:newStreamEventNode];
+    
+    return messageNode;
+}
+
++ (XMPPMessageBaseNode *)insertForOutgoingMessageToRecipientWithJID:(XMPPJID *)toJID inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:managedObjectContext];
+    messageNode.stanzaID = [NSUUID UUID].UUIDString;
+    messageNode.toJID = toJID;
+    return messageNode;
+}
+
+- (XMPPMessage *)outgoingMessage
+{
+    NSString *typeString;
+    switch (self.type) {
+        case XMPPMessageTypeChat:
+            typeString = @"chat";
+            break;
+            
+        case XMPPMessageTypeError:
+            typeString = @"error";
+            break;
+            
+        case XMPPMessageTypeGroupchat:
+            typeString = @"groupchat";
+            break;
+            
+        case XMPPMessageTypeHeadline:
+            typeString = @"headline";
+            break;
+            
+        case XMPPMessageTypeNormal:
+            typeString = @"normal";
+            break;
+    }
+    
+    XMPPMessage *message = [[XMPPMessage alloc] initWithType:typeString to:self.toJID elementID:self.stanzaID];
+    
+    if (self.body) {
+        [message addBody:self.body];
+    }
+    if (self.subject) {
+        [message addSubject:self.subject];
+    }
+    if (self.thread) {
+        [message addThread:self.thread];
+    }
+    
+    [self.parentContextNode applyContextToOutgoingMessage:message fromNode:self];
+    for (XMPPMessageContextNode *childContextNode in self.childContextNodes) {
+        [childContextNode applyContextToOutgoingMessage:message fromNode:self];
+    }
+    
+    return message;
+}
+
+- (void)registerOutgoingMessageInStreamWithJID:(XMPPJID *)streamJID streamEventID:(NSString *)streamEventID
+{
+    NSAssert(self.managedObjectContext, @"Attempted to register an outgoing message event for a message node not associated with any managed object context");
+    
+    XMPPMessageStreamEventNode *streamEventNode = [XMPPMessageStreamEventNode xmpp_insertNewObjectInManagedObjectContext:self.managedObjectContext];
+    streamEventNode.eventID = streamEventID;
+    streamEventNode.kind = XMPPMessageStreamEventKindOutgoing;
+    streamEventNode.streamJID = streamJID;
+    
+    [self addChildContextNodesObject:streamEventNode];
 }
 
 #pragma mark - Overridden
