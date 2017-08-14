@@ -317,6 +317,35 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
     XCTAssertFalse([obsoletingNode isObsoleted]);
 }
 
+- (void)testMessageNodeRootsFetch
+{
+    XMPPMessageStreamEventNode *earlierMessageStreamEventNode = [XMPPMessageStreamEventNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    earlierMessageStreamEventNode.eventID = @"earlierEventID";
+    earlierMessageStreamEventNode.timestamp = [NSDate distantPast];
+    
+    XMPPMessageBaseNode *nonRootMessageNode = [XMPPMessageBaseNode findOrCreateForIncomingMessage:[[XMPPMessage alloc] init]
+                                                                                    withStreamJID:[XMPPJID jidWithString:@"user@domain/resource"]
+                                                                                    streamEventID:@"nonRootEventID"
+                                                                           inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    nonRootMessageNode.parentContextNode = [XMPPMessageContextNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    
+    XMPPMessageStreamEventNode *obsoletedMessageStreamEventNode = [XMPPMessageStreamEventNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    obsoletedMessageStreamEventNode.eventID = @"obsoletedEventID";
+    obsoletedMessageStreamEventNode.obsoleted = YES;
+    
+    XMPPMessageStreamEventNode *userExcludedStreamEventNode = [XMPPMessageStreamEventNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    NSPredicate *userExclusionPredicate = [NSPredicate predicateWithFormat:@"SELF != %@", userExcludedStreamEventNode];
+    
+    NSFetchedResultsController *fetchedResultsController = [XMPPMessageOriginNode fetchMessageNodeRootsInManagedObjectContext:self.storage.mainThreadManagedObjectContext
+                                                                                                        filteredWithPredicate:userExclusionPredicate
+                                                                                                           sectionNameKeyPath:nil
+                                                                                                                    cacheName:nil];
+    [fetchedResultsController performFetch:NULL];
+    
+    NSArray *expectedFetchedObjects = @[earlierMessageStreamEventNode, self.streamEventNode];
+    XCTAssertEqualObjects(fetchedResultsController.fetchedObjects, expectedFetchedObjects);
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context
 {
     if (context != KeyValueObservingExpectationContext) {
