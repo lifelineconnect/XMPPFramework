@@ -3,6 +3,7 @@
 #import "XMPPMessage.h"
 #import "XMPPMessageStreamEventNode.h"
 #import "NSManagedObject+XMPPCoreDataStorage.h"
+#import "XMPPMessageStreamEventNode.h"
 
 @interface XMPPMessageBaseNode ()
 
@@ -290,6 +291,8 @@
 - (void)registerOutgoingMessageInStreamWithJID:(XMPPJID *)streamJID streamEventID:(NSString *)streamEventID
 {
     NSAssert(self.managedObjectContext, @"Attempted to register an outgoing message event for a message node not associated with any managed object context");
+    
+    [self obsoleteOutgoingStreamEvents];
     
     XMPPMessageStreamEventNode *streamEventNode = [XMPPMessageStreamEventNode xmpp_insertNewObjectInManagedObjectContext:self.managedObjectContext];
     streamEventNode.eventID = streamEventID;

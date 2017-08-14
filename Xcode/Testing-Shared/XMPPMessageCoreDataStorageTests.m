@@ -228,6 +228,7 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
         XMPPMessageBaseNode *messageNode = streamEventNode.parentMessageNode;
         
         XCTAssertNotNil(streamEventNode);
+        XCTAssertFalse([streamEventNode isObsoleted]);
         XCTAssertNotNil(streamEventNode.timestamp);
         XCTAssertEqual(streamEventNode.kind, XMPPMessageStreamEventKindIncoming);
         XCTAssertEqualObjects(streamEventNode.streamJID, [XMPPJID jidWithString:@"user2@domain2/resource2"]);
@@ -296,9 +297,24 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
     
     XCTAssertNotNil(eventNode);
     XCTAssertEqualObjects(eventNode.parentMessageNode, self.messageNode);
+    XCTAssertFalse([eventNode isObsoleted]);
     XCTAssertNotNil(eventNode.timestamp);
     XCTAssertEqual(eventNode.kind, XMPPMessageStreamEventKindOutgoing);
     XCTAssertEqualObjects(eventNode.streamJID, [XMPPJID jidWithString:@"user@domain/resource"]);
+}
+
+- (void)testOutgoingMessageEventObsoleting
+{
+    [self.messageNode registerOutgoingMessageInStreamWithJID:[XMPPJID jidWithString:@"user@domain/resource"] streamEventID:@"obsoletedEventID"];
+    [self.messageNode registerOutgoingMessageInStreamWithJID:[XMPPJID jidWithString:@"user@domain/resource"] streamEventID:@"obsoletingEventID"];
+    
+    XMPPMessageStreamEventNode *obsoletedNode = [XMPPMessageStreamEventNode findWithID:@"obsoletedEventID"
+                                                                inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    XMPPMessageStreamEventNode *obsoletingNode = [XMPPMessageStreamEventNode findWithID:@"obsoletingEventID"
+                                                                 inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    
+    XCTAssertTrue([obsoletedNode isObsoleted]);
+    XCTAssertFalse([obsoletingNode isObsoleted]);
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context

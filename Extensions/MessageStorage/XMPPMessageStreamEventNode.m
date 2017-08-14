@@ -126,3 +126,20 @@
 }
 
 @end
+
+@implementation XMPPMessageBaseNode (XMPPMessageStreamEventNode)
+
+- (void)obsoleteOutgoingStreamEvents
+{
+    for (__kindof XMPPMessageContextNode *childContextNode in self.childContextNodes) {
+        if (![childContextNode isKindOfClass:[XMPPMessageStreamEventNode class]]) {
+            continue;
+        }
+        XMPPMessageStreamEventNode *streamEventNode = childContextNode;
+        if (streamEventNode.kind == XMPPMessageStreamEventKindOutgoing) {
+            streamEventNode.obsoleted = YES;
+        }
+    }
+}
+
+@end

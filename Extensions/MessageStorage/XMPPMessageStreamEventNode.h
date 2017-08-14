@@ -1,4 +1,5 @@
 #import "XMPPMessageOriginNode.h"
+#import "XMPPMessageBaseNode.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -18,6 +19,12 @@ typedef NS_ENUM(int16_t, XMPPMessageStreamEventKind) {
 
 + (nullable XMPPMessageStreamEventNode *)findWithID:(NSString *)streamEventID
                              inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
+
+@end
+
+@interface XMPPMessageBaseNode (XMPPMessageStreamEventNode)
+
+- (void)obsoleteOutgoingStreamEvents;
 
 @end
 
