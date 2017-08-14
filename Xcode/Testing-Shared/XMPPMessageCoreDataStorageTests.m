@@ -35,6 +35,7 @@ static void *KeyValueObservingExpectationContext = &KeyValueObservingExpectation
     self.messageNode = [[XMPPMessageBaseNode alloc] initWithContext:self.storage.mainThreadManagedObjectContext];
     self.streamEventNode = [[XMPPMessageStreamEventNode alloc] initWithContext:self.storage.mainThreadManagedObjectContext];
     self.streamEventNode.eventID = [NSUUID UUID].UUIDString;
+    self.streamEventNode.parentMessageNode = self.messageNode;
     
     [self.messageNode addObserver:self forKeyPath:@"fromJID" options:0 context:KeyValueObservingExpectationContext];
     [self.messageNode addObserver:self forKeyPath:@"fromDomain" options:0 context:KeyValueObservingExpectationContext];
