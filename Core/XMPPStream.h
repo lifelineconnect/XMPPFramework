@@ -20,6 +20,7 @@
 @class XMPPModule;
 @class XMPPElement;
 @class XMPPElementReceipt;
+@class XMPPElementEvent;
 @protocol XMPPStreamDelegate;
 
 #if TARGET_OS_IPHONE
@@ -617,8 +618,9 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
 - (void)sendElement:(NSXMLElement *)element;
 
 /**
- * Just like the sendElement: method above,
- * but allows you to receive a receipt that can later be used to verify the element has been sent.
+ * Just like the sendElement: method above, but allows you to:
+ * - Receive a receipt that can later be used to verify the element has been sent.
+ * - Provide an event ID that can later be used to trace the element in delegate callbacks.
  * 
  * If you later want to check to see if the element has been sent:
  * 
@@ -646,6 +648,7 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
  * Even if you close the xmpp stream after this point, the OS will still do everything it can to send the data.
 **/
 - (void)sendElement:(NSXMLElement *)element andGetReceipt:(XMPPElementReceipt **)receiptPtr;
+- (void)sendElement:(NSXMLElement *)element inContextOfEventWithID:(NSString *)eventID andGetReceipt:(XMPPElementReceipt **)receiptPtr;
 
 /**
  * Fetches and resends the myPresence element (if available) in a single atomic operation.
@@ -784,6 +787,26 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
  * Even if you close the xmpp stream after this point, the OS will still do everything it can to send the data.
 **/
 - (BOOL)wait:(NSTimeInterval)timeout;
+
+@end
+
+/**
+ * A handle that allows identifying elements sent or received in the stream across delegate callbacks.
+ *
+ * While the core XMPP specification does not require stanzas to be uniquely identifiable, you may still want to
+ * identify them internally across different modules or trace sent ones to the respective send result delegate callbacks.
+ * To do so, you implement delegate callback variants providing the event context parameters and then match the events
+ * on `uniqueID` property.
+ * This is a more robust approach than relying on pointer equality of `XMPPElement` instances.
+ */
+@interface XMPPElementEvent : NSObject
+
+@property (nonatomic, unsafe_unretained, readonly) XMPPStream *xmppStream;
+@property (nonatomic, copy, readonly) NSString *uniqueID;
+@property (nonatomic, strong, readonly) XMPPJID *myJID;
+@property (nonatomic, strong, readonly) NSDate *timestamp;
+
+- (instancetype)init NS_UNAVAILABLE;
 
 @end
 
@@ -961,22 +984,29 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
  *
  * You should NOT implement these methods unless you have good reason to do so.
  * For general processing and notification of received elements, please use xmppStream:didReceiveX: methods.
+ *
+ * In order to trace individual elements across several delegates, use the inContextOfEvent: variants.
+ * For more details, please refer to XMPPElementEvent documentation.
  * 
  * @see xmppStream:didReceiveIQ:
  * @see xmppStream:didReceiveMessage:
  * @see xmppStream:didReceivePresence:
 **/
 - (XMPPIQ *)xmppStream:(XMPPStream *)sender willReceiveIQ:(XMPPIQ *)iq;
+- (XMPPIQ *)xmppStream:(XMPPStream *)sender willReceiveIQ:(XMPPIQ *)iq inContextOfEvent:(XMPPElementEvent *)event;
 - (XMPPMessage *)xmppStream:(XMPPStream *)sender willReceiveMessage:(XMPPMessage *)message;
+- (XMPPMessage *)xmppStream:(XMPPStream *)sender willReceiveMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event;
 - (XMPPPresence *)xmppStream:(XMPPStream *)sender willReceivePresence:(XMPPPresence *)presence;
+- (XMPPPresence *)xmppStream:(XMPPStream *)sender willReceivePresence:(XMPPPresence *)presence inContextOfEvent:(XMPPElementEvent *)event;
 
 /**
- * This method is called if any of the xmppStream:willReceiveX: methods filter the incoming stanza.
+ * These methods are called if any of the xmppStream:willReceiveX: methods filter the incoming stanza.
  * 
  * It may be useful for some extensions to know that something was received,
  * even if it was filtered for some reason.
 **/
 - (void)xmppStreamDidFilterStanza:(XMPPStream *)sender;
+- (void)xmppStreamDidFilterStanza:(XMPPStream *)sender inContextOfEvent:(XMPPElementEvent *)event;
 
 /**
  * These methods are called after their respective XML elements are received on the stream.
@@ -989,10 +1019,16 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
  * As documented in NSXML / KissXML, elements are read-access thread-safe, but write-access thread-unsafe.
  * If you have need to modify an element for any reason,
  * you should copy the element first, and then modify and use the copy.
+ *
+ * In order to trace individual elements across several delegates, use the inContextOfEvent: variants.
+ * For more details, please refer to XMPPElementEvent documentation.
 **/
 - (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq;
+- (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq inContextOfEvent:(XMPPElementEvent *)event;
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message;
+- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event;
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence;
+- (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence inContextOfEvent:(XMPPElementEvent *)event;
 
 /**
  * This method is called if an XMPP error is received.
@@ -1021,31 +1057,52 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
  * 
  * You should NOT implement these methods unless you have good reason to do so.
  * For general processing and notification of sent elements, please use xmppStream:didSendX: methods.
+ *
+ * In order to trace individual elements across several delegates, use the inContextOfEventWithID: variants.
+ * Note that at the time these methods are called, the event context is incomplete - the eventual myJID value is not known yet.
+ * For more details, please refer to XMPPElementEvent documentation.
  * 
  * @see xmppStream:didSendIQ:
  * @see xmppStream:didSendMessage:
  * @see xmppStream:didSendPresence:
 **/
 - (XMPPIQ *)xmppStream:(XMPPStream *)sender willSendIQ:(XMPPIQ *)iq;
+- (XMPPIQ *)xmppStream:(XMPPStream *)sender willSendIQ:(XMPPIQ *)iq inContextOfEventWithID:(NSString *)eventID;
 - (XMPPMessage *)xmppStream:(XMPPStream *)sender willSendMessage:(XMPPMessage *)message;
+- (XMPPMessage *)xmppStream:(XMPPStream *)sender willSendMessage:(XMPPMessage *)message inContextOfEventWithID:(NSString *)eventID;
 - (XMPPPresence *)xmppStream:(XMPPStream *)sender willSendPresence:(XMPPPresence *)presence;
+- (XMPPPresence *)xmppStream:(XMPPStream *)sender willSendPresence:(XMPPPresence *)presence inContextOfEventWithID:(NSString *)eventID;
 
 /**
  * These methods are called after their respective XML elements are sent over the stream.
  * These methods may be used to listen for certain events (such as an unavailable presence having been sent),
  * or for general logging purposes. (E.g. a central history logging mechanism).
+ *
+ * In order to trace individual elements across several delegates, or between sending and delegate callbacks,
+ * use the inContextOfEvent: variants. For more details, please refer to XMPPElementEvent documentation.
 **/
 - (void)xmppStream:(XMPPStream *)sender didSendIQ:(XMPPIQ *)iq;
+- (void)xmppStream:(XMPPStream *)sender didSendIQ:(XMPPIQ *)iq inContextOfEvent:(XMPPElementEvent *)event;
 - (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message;
+- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event;
 - (void)xmppStream:(XMPPStream *)sender didSendPresence:(XMPPPresence *)presence;
+- (void)xmppStream:(XMPPStream *)sender didSendPresence:(XMPPPresence *)presence inContextOfEvent:(XMPPElementEvent *)event;
 
 /**
  * These methods are called after failing to send the respective XML elements over the stream.
  * This occurs when the stream gets disconnected before the element can get sent out.
+ *
+ * In order to trace individual elements across several delegates, or between sending and delegate callbacks,
+ * use the inContextOfEvent: variants. Note that if these methods are called, the event context is likely to be incomplete,
+ * e.g. the stream might have not been connected and the actual myJID value is not determined. For more details,
+ * please refer to XMPPElementEvent documentation.
 **/
 - (void)xmppStream:(XMPPStream *)sender didFailToSendIQ:(XMPPIQ *)iq error:(NSError *)error;
+- (void)xmppStream:(XMPPStream *)sender didFailToSendIQ:(XMPPIQ *)iq inContextOfEventWithID:(NSString *)eventID error:(NSError *)error;
 - (void)xmppStream:(XMPPStream *)sender didFailToSendMessage:(XMPPMessage *)message error:(NSError *)error;
+- (void)xmppStream:(XMPPStream *)sender didFailToSendMessage:(XMPPMessage *)message inContextOfEventWithID:(NSString *)eventID error:(NSError *)error;
 - (void)xmppStream:(XMPPStream *)sender didFailToSendPresence:(XMPPPresence *)presence error:(NSError *)error;
+- (void)xmppStream:(XMPPStream *)sender didFailToSendPresence:(XMPPPresence *)presence inContextOfEventWithID:(NSString *)eventID error:(NSError *)error;
 
 /**
  * This method is called if the XMPP Stream's jid changes.
@@ -1138,9 +1195,14 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
  * If you're using custom elements, you must register the custom element name(s).
  * Otherwise the xmppStream will treat non-XMPP elements as errors (xmppStream:didReceiveError:).
  * 
+ * In order to trace the individual elements across several delegates, or between sending and delegate callbacks,
+ * use the inContextOfEvent: variants. For more details, please refer to XMPPElementEvent documentation.
+ *
  * @see registerCustomElementNames (in XMPPInternal.h)
 **/
 - (void)xmppStream:(XMPPStream *)sender didSendCustomElement:(NSXMLElement *)element;
+- (void)xmppStream:(XMPPStream *)sender didSendCustomElement:(NSXMLElement *)element inContextOfEvent:(XMPPElementEvent *)event;
 - (void)xmppStream:(XMPPStream *)sender didReceiveCustomElement:(NSXMLElement *)element;
+- (void)xmppStream:(XMPPStream *)sender didReceiveCustomElement:(NSXMLElement *)element inContextOfEvent:(XMPPElementEvent *)event;
 
 @end

@@ -96,6 +96,7 @@ extern NSString *const XMPPStreamDidChangeMyJIDNotification;
  * This is an advanced technique, but makes for some interesting possibilities.
 **/
 - (void)injectElement:(NSXMLElement *)element;
+- (void)injectElement:(NSXMLElement *)element inContextOfEventWithID:(NSString *)eventID;
 
 /**
  * The XMPP standard only supports <iq>, <message> and <presence> stanzas (excluding session setup stuff).
