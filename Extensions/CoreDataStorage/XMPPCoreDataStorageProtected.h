@@ -66,16 +66,6 @@
 
 /**
  * Override me, if needed, to provide customized behavior.
- *
- * This method is invoked right before the managed object model is used to create the persistent store coordinator.
- * It is the last moment to apply any managed object model modifications.
- *
- * The default implementation does nothing.
- **/
-- (void)willCreatePersistentStoreCoordinator;
-
-/**
- * Override me, if needed, to provide customized behavior.
  * 
  * If you are using a database file with pure non-persistent data (e.g. for memory optimization purposes on iOS),
  * you may want to delete the database file if it already exists on disk.

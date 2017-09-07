@@ -24,9 +24,6 @@ typedef NS_ENUM(int16_t, XMPPMessageType) {
 
 @property (nonatomic, assign) XMPPMessageType type;
 
-@property (nonatomic, strong, nullable) XMPPMessageContextNode *parentContextNode;
-@property (nonatomic, copy, nullable) NSSet<XMPPMessageContextNode *> *childContextNodes;
-
 + (XMPPMessageBaseNode *)findOrCreateForIncomingMessage:(XMPPMessage *)message
                                           withStreamJID:(XMPPJID *)streamJID
                                           streamEventID:(NSString *)streamEventID
@@ -37,14 +34,8 @@ typedef NS_ENUM(int16_t, XMPPMessageType) {
 - (XMPPMessage *)outgoingMessage;
 - (void)registerOutgoingMessageInStreamWithJID:(XMPPJID *)streamJID streamEventID:(NSString *)streamEventID;
 
-@end
 
-@interface XMPPMessageBaseNode (CoreDataGeneratedRelationshipAccesssors)
 
-- (void)addChildContextNodesObject:(XMPPMessageContextNode *)value;
-- (void)removeChildContextNodesObject:(XMPPMessageContextNode *)value;
-- (void)addChildContextNodes:(NSSet<XMPPMessageContextNode *> *)value;
-- (void)removeChildContextNodes:(NSSet<XMPPMessageContextNode *> *)value;
 
 @end
 

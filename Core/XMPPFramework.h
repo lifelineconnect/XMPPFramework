@@ -162,8 +162,6 @@
 #import "XMPPMessageCoreDataStorage.h"
 #import "XMPPMessageBaseNode.h"
 #import "XMPPMessageContextNode.h"
-#import "XMPPMessageOriginNode.h"
-#import "XMPPMessageStreamEventNode.h"
 
 FOUNDATION_EXPORT double XMPPFrameworkVersionNumber;
 FOUNDATION_EXPORT const unsigned char XMPPFrameworkVersionString[];

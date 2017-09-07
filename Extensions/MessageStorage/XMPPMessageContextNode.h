@@ -6,8 +6,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface XMPPMessageContextNode : NSManagedObject
 
-@property (nonatomic, strong, nullable) XMPPMessageBaseNode *parentMessageNode;
-@property (nonatomic, copy, nullable) NSSet<XMPPMessageBaseNode *> *childMessageNodes;
 
 - (void)applyContextToOutgoingMessage:(XMPPMessage *)message fromNode:(XMPPMessageBaseNode *)messageNode;
 
@@ -15,10 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface XMPPMessageContextNode (CoreDataGeneratedRelationshipAccesssors)
 
-- (void)addChildMessageNodesObject:(XMPPMessageBaseNode *)value;
-- (void)removeChildMessageNodesObject:(XMPPMessageBaseNode *)value;
-- (void)addChildMessageNodes:(NSSet<XMPPMessageBaseNode *> *)value;
-- (void)removeChildMessageNodes:(NSSet<XMPPMessageBaseNode *> *)value;
 
 @end
 

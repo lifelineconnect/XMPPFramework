@@ -1,9 +1,7 @@
 #import "XMPPMessageBaseNode.h"
 #import "XMPPJID.h"
 #import "XMPPMessage.h"
-#import "XMPPMessageStreamEventNode.h"
 #import "NSManagedObject+XMPPCoreDataStorage.h"
-#import "XMPPMessageStreamEventNode.h"
 
 @interface XMPPMessageBaseNode ()
 
