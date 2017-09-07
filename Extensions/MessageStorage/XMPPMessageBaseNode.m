@@ -1,4 +1,5 @@
 #import "XMPPMessageBaseNode.h"
+#import "XMPPMessageBaseNode+Protected.h"
 #import "XMPPJID.h"
 #import "XMPPMessage.h"
 #import "NSManagedObject+XMPPCoreDataStorage.h"
@@ -11,6 +12,8 @@
 @property (nonatomic, copy, nullable) NSString *toDomain;
 @property (nonatomic, copy, nullable) NSString *toResource;
 @property (nonatomic, copy, nullable) NSString *toUser;
+
+@property (nonatomic, copy, nullable) NSSet<XMPPMessageContextNode *> *contextNodes;
 
 @end
 
@@ -32,7 +35,7 @@
 
 @implementation XMPPMessageBaseNode
 
-@dynamic fromDomain, fromResource, fromUser, toDomain, toResource, toUser, body, stanzaID, subject, thread, type, parentContextNode, childContextNodes;
+@dynamic fromDomain, fromResource, fromUser, toDomain, toResource, toUser, body, stanzaID, subject, thread, direction, type, contextNodes;
 
 #pragma mark - fromJID transient property
 

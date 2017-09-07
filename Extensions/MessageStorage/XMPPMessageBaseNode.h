@@ -2,7 +2,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class XMPPJID, XMPPMessage, XMPPMessageContextNode;
+@class XMPPJID, XMPPMessage;
+
+typedef NS_ENUM(int16_t, XMPPMessageDirection) {
+    XMPPMessageDirectionUnspecified,
+    XMPPMessageDirectionIncoming,
+    XMPPMessageDirectionOutgoing
+};
 
 typedef NS_ENUM(int16_t, XMPPMessageType) {
     XMPPMessageTypeNormal,
@@ -22,6 +28,7 @@ typedef NS_ENUM(int16_t, XMPPMessageType) {
 @property (nonatomic, copy, nullable) NSString *subject;
 @property (nonatomic, copy, nullable) NSString *thread;
 
+@property (nonatomic, assign) XMPPMessageDirection direction;
 @property (nonatomic, assign) XMPPMessageType type;
 
 + (XMPPMessageBaseNode *)findOrCreateForIncomingMessage:(XMPPMessage *)message
