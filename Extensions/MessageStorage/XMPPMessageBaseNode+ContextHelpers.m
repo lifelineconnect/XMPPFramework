@@ -14,6 +14,23 @@
     return insertedNode;
 }
 
+- (id)lookupInContextWithBlock:(id (^)(XMPPMessageContextNode * _Nonnull))lookupBlock
+{
+    id lookupResult;
+    for (XMPPMessageContextNode *contextNode in self.contextNodes) {
+        id nodeResult = lookupBlock(contextNode);
+        if (!nodeResult) {
+            continue;
+        }
+        NSAssert(!lookupResult, @"A unique lookup result is expected");
+        lookupResult = nodeResult;
+#ifdef NS_BLOCK_ASSERTIONS
+        break;
+#endif
+    }
+    return lookupResult;
+}
+
 @end
 
 @implementation XMPPMessageContextNode (ContextHelpers)
@@ -99,6 +116,46 @@
         [self removeTimestampItemsObject:timestampItem];
         [self.managedObjectContext deleteObject:timestampItem];
     }
+}
+
+- (NSSet<XMPPJID *> *)jidItemValuesForTag:(XMPPMessageContextJIDItemTag)tag
+{
+    return [[self jidItemsForTag:tag expectingSingleElement:NO] valueForKey:NSStringFromSelector(@selector(value))];
+}
+
+- (XMPPJID *)jidItemValueForTag:(XMPPMessageContextJIDItemTag)tag
+{
+    return [[self jidItemsForTag:tag expectingSingleElement:YES] anyObject].value;
+}
+
+- (NSInteger)markerItemCountForTag:(XMPPMessageContextMarkerItemTag)tag
+{
+    return [self markerItemsForTag:tag expectingSingleElement:NO].count;
+}
+
+- (BOOL)hasMarkerItemForTag:(XMPPMessageContextMarkerItemTag)tag
+{
+    return [[self markerItemsForTag:tag expectingSingleElement:YES] anyObject] != nil;
+}
+
+- (NSSet<NSString *> *)stringItemValuesForTag:(XMPPMessageContextStringItemTag)tag
+{
+    return [[self stringItemsForTag:tag expectingSingleElement:NO] valueForKey:NSStringFromSelector(@selector(value))];
+}
+
+- (NSString *)stringItemValueForTag:(XMPPMessageContextStringItemTag)tag
+{
+    return [[self stringItemsForTag:tag expectingSingleElement:YES] anyObject].value;
+}
+
+- (NSSet<NSDate *> *)timestampItemValuesForTag:(XMPPMessageContextTimestampItemTag)tag
+{
+    return [[self timestampItemsForTag:tag expectingSingleElement:NO] valueForKey:NSStringFromSelector(@selector(value))];
+}
+
+- (NSDate *)timestampItemValueForTag:(XMPPMessageContextTimestampItemTag)tag
+{
+    return [[self timestampItemsForTag:tag expectingSingleElement:YES] anyObject].value;
 }
 
 - (NSSet<XMPPMessageContextJIDItem *> *)jidItemsForTag:(XMPPMessageContextJIDItemTag)tag expectingSingleElement:(BOOL)isSingleElementExpected

@@ -7,6 +7,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface XMPPMessageBaseNode (ContextHelpers)
 
 - (XMPPMessageContextNode *)appendContextNodeWithStreamEventID:(NSString *)streamEventID;
+- (nullable id)lookupInContextWithBlock:(id __nullable (^)(XMPPMessageContextNode *contextNode))lookupBlock;
 
 @end
 
@@ -21,6 +22,15 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeMarkerItemsWithTag:(XMPPMessageContextMarkerItemTag)tag;
 - (void)removeStringItemsWithTag:(XMPPMessageContextStringItemTag)tag;
 - (void)removeTimestampItemsWithTag:(XMPPMessageContextTimestampItemTag)tag;
+
+- (NSSet<XMPPJID *> *)jidItemValuesForTag:(XMPPMessageContextJIDItemTag)tag;
+- (nullable XMPPJID *)jidItemValueForTag:(XMPPMessageContextJIDItemTag)tag;
+- (NSInteger)markerItemCountForTag:(XMPPMessageContextMarkerItemTag)tag;
+- (BOOL)hasMarkerItemForTag:(XMPPMessageContextMarkerItemTag)tag;
+- (NSSet<NSString *> *)stringItemValuesForTag:(XMPPMessageContextStringItemTag)tag;
+- (nullable NSString *)stringItemValueForTag:(XMPPMessageContextStringItemTag)tag;
+- (NSSet<NSDate *> *)timestampItemValuesForTag:(XMPPMessageContextTimestampItemTag)tag;
+- (nullable NSDate *)timestampItemValueForTag:(XMPPMessageContextTimestampItemTag)tag;
 
 @end
 
