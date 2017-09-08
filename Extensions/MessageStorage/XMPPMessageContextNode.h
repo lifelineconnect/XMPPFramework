@@ -2,13 +2,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class XMPPMessageBaseNode, XMPPMessageContextJIDItem, XMPPMessageContextMarkerItem, XMPPMessageContextStringItem, XMPPMessageContextTimestampItem, XMPPMessage;
+@class XMPPMessageBaseNode, XMPPMessageContextJIDItem, XMPPMessageContextMarkerItem, XMPPMessageContextStringItem, XMPPMessageContextTimestampItem;
 
 @interface XMPPMessageContextNode : NSManagedObject
 
 @property (nonatomic, copy, nullable) NSString *streamEventID;
 
-- (void)applyContextToOutgoingMessage:(XMPPMessage *)message fromNode:(XMPPMessageBaseNode *)messageNode;
 @property (nonatomic, strong, nullable) XMPPMessageBaseNode *messageNode;
 @property (nonatomic, copy, nullable) NSSet<XMPPMessageContextJIDItem *> *jidItems;
 @property (nonatomic, copy, nullable) NSSet<XMPPMessageContextMarkerItem *> *markerItems;
