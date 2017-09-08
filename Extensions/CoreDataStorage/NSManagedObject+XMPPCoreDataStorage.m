@@ -15,6 +15,25 @@
     return fetchRequest;
 }
 
++ (NSPredicate *)xmpp_jidPredicateWithDomainKeyPath:(NSString *)domainKeyPath resourceKeyPath:(NSString *)resourceKeyPath userKeyPath:(NSString *)userKeyPath value:(XMPPJID *)value compareOptions:(XMPPJIDCompareOptions)compareOptions
+{
+    NSMutableArray *subpredicates = [[NSMutableArray alloc] init];
+    
+    if (compareOptions & XMPPJIDCompareDomain) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"%K = %@", domainKeyPath, value.domain]];
+    }
+    
+    if (compareOptions & XMPPJIDCompareResource) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"%K = %@", resourceKeyPath, value.resource]];
+    }
+    
+    if (compareOptions & XMPPJIDCompareUser) {
+        [subpredicates addObject:[NSPredicate predicateWithFormat:@"%K = %@", userKeyPath, value.user]];
+    }
+    
+    return [NSCompoundPredicate andPredicateWithSubpredicates:subpredicates];
+}
+
 + (NSEntityDescription *)xmpp_entityInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSUInteger selfEntityIndex = [managedObjectContext.persistentStoreCoordinator.managedObjectModel.entities indexOfObjectPassingTest:^BOOL(NSEntityDescription * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
