@@ -2497,8 +2497,22 @@ enum XMPPStreamConfig
 	           withTimeout:TIMEOUT_XMPP_WRITE
 	                   tag:tag];
 	
-	[multicastDelegate xmppStream:self didSendIQ:iq];
-    [multicastDelegate xmppStream:self didSendIQ:iq inContextOfEvent:event];
+    dispatch_group_t delegateGroup = dispatch_group_create();
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendIQ:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didSendIQ:iq inContextOfEvent:event];
+    }];
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendIQ:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didSendIQ:iq];
+    }];
+    
+    dispatch_group_notify(delegateGroup, xmppQueue, ^{
+       
+        [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+    });
 }
 
 - (void)continueSendMessage:(XMPPMessage *)message inContextOfEventWithID:(NSString *)eventID withTag:(long)tag
@@ -2518,8 +2532,22 @@ enum XMPPStreamConfig
 	           withTimeout:TIMEOUT_XMPP_WRITE
 	                   tag:tag];
 	
-	[multicastDelegate xmppStream:self didSendMessage:message];
-    [multicastDelegate xmppStream:self didSendMessage:message inContextOfEvent:event];
+    dispatch_group_t delegateGroup = dispatch_group_create();
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendMessage:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didSendMessage:message inContextOfEvent:event];
+    }];
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendMessage:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didSendMessage:message];
+    }];
+    
+    dispatch_group_notify(delegateGroup, xmppQueue, ^{
+        
+        [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+    });
 }
 
 - (void)continueSendPresence:(XMPPPresence *)presence inContextOfEventWithID:(NSString *)eventID withTag:(long)tag
@@ -2554,8 +2582,22 @@ enum XMPPStreamConfig
 		}
 	}
 	
-	[multicastDelegate xmppStream:self didSendPresence:presence];
-    [multicastDelegate xmppStream:self didSendPresence:presence inContextOfEvent:event];
+    dispatch_group_t delegateGroup = dispatch_group_create();
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendPresence:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didSendPresence:presence inContextOfEvent:event];
+    }];
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendPresence:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didSendPresence:presence];
+    }];
+    
+    dispatch_group_notify(delegateGroup, xmppQueue, ^{
+        
+        [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+    });
 }
 
 - (void)continueSendElement:(NSXMLElement *)element inContextOfEventWithID:(NSString *)eventID withTag:(long)tag
@@ -2577,9 +2619,27 @@ enum XMPPStreamConfig
 	
 	if ([customElementNames countForObject:[element name]])
 	{
-        [multicastDelegate xmppStream:self didSendCustomElement:element];
-		[multicastDelegate xmppStream:self didSendCustomElement:element inContextOfEvent:event];
+		dispatch_group_t delegateGroup = dispatch_group_create();
+        
+        [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendCustomElement:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+            
+            [delegate xmppStream:self didSendCustomElement:element inContextOfEvent:event];
+        }];
+        
+        [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didSendCustomElement:) withDispatchGroup:delegateGroup block:^(id delegate) {
+            
+            [delegate xmppStream:self didSendCustomElement:element];
+        }];
+        
+        dispatch_group_notify(delegateGroup, xmppQueue, ^{
+            
+            [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+        });
 	}
+    else
+    {
+        [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+    }
 }
 
 /**
@@ -2916,8 +2976,7 @@ enum XMPPStreamConfig
                     }
                     else
                     {
-                        [multicastDelegate xmppStreamDidFilterStanza:self inContextOfEvent:event];
-						[multicastDelegate xmppStreamDidFilterStanza:self];
+                        [self didFilterStanzaInContextOfEvent:event];
                     }
 				}
 			}});
@@ -2995,8 +3054,7 @@ enum XMPPStreamConfig
                     }
 					else
                     {
-                        [multicastDelegate xmppStreamDidFilterStanza:self inContextOfEvent:event];
-						[multicastDelegate xmppStreamDidFilterStanza:self];
+                        [self didFilterStanzaInContextOfEvent:event];
                     }
 				}
 			}});
@@ -3074,8 +3132,7 @@ enum XMPPStreamConfig
                     }
 					else
                     {
-                        [multicastDelegate xmppStreamDidFilterStanza:self inContextOfEvent:event];
-						[multicastDelegate xmppStreamDidFilterStanza:self];
+                        [self didFilterStanzaInContextOfEvent:event];
                     }
 				}
 			}});
@@ -3172,6 +3229,7 @@ enum XMPPStreamConfig
 			dispatch_release(delGroup);
 			#endif
 			
+            [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
 		}});
 	}
 	else
@@ -3179,21 +3237,83 @@ enum XMPPStreamConfig
 		// The IQ doesn't require a response.
 		// So we can just fire the delegate method and ignore the responses.
 		
-        [multicastDelegate xmppStream:self didReceiveIQ:iq inContextOfEvent:event];
-		[multicastDelegate xmppStream:self didReceiveIQ:iq];
+        dispatch_group_t delegateGroup = dispatch_group_create();
+        
+        [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceiveIQ:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+            
+            [delegate xmppStream:self didReceiveIQ:iq inContextOfEvent:event];
+        }];
+        
+        [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceiveIQ:) withDispatchGroup:delegateGroup block:^(id delegate) {
+            
+            [delegate xmppStream:self didReceiveIQ:iq];
+        }];
+        
+        dispatch_group_notify(delegateGroup, xmppQueue, ^{
+            
+            [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+        });
 	}
 }
 
 - (void)continueReceiveMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event
 {
-    [multicastDelegate xmppStream:self didReceiveMessage:message inContextOfEvent:event];
-	[multicastDelegate xmppStream:self didReceiveMessage:message];
+    dispatch_group_t delegateGroup = dispatch_group_create();
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceiveMessage:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didReceiveMessage:message inContextOfEvent:event];
+    }];
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceiveMessage:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didReceiveMessage:message];
+    }];
+    
+    dispatch_group_notify(delegateGroup, xmppQueue, ^{
+        
+        [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+    });
 }
 
 - (void)continueReceivePresence:(XMPPPresence *)presence inContextOfEvent:(XMPPElementEvent *)event
 {
-    [multicastDelegate xmppStream:self didReceivePresence:presence inContextOfEvent:event];
-	[multicastDelegate xmppStream:self didReceivePresence:presence];
+    dispatch_group_t delegateGroup = dispatch_group_create();
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceivePresence:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didReceivePresence:presence inContextOfEvent:event];
+    }];
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceivePresence:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStream:self didReceivePresence:presence];
+    }];
+    
+    dispatch_group_notify(delegateGroup, xmppQueue, ^{
+        
+        [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+    });
+}
+
+- (void)didFilterStanzaInContextOfEvent:(XMPPElementEvent *)event
+{
+    dispatch_group_t delegateGroup = dispatch_group_create();
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStreamDidFilterStanza:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStreamDidFilterStanza:self inContextOfEvent:event];
+    }];
+    
+    [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStreamDidFilterStanza:) withDispatchGroup:delegateGroup block:^(id delegate) {
+        
+        [delegate xmppStreamDidFilterStanza:self];
+    }];
+    
+    dispatch_group_notify(delegateGroup, xmppQueue, ^{
+        
+        [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+    });
 }
 
 /**
@@ -3248,12 +3368,36 @@ enum XMPPStreamConfig
 			}
 			else if ([customElementNames countForObject:elementName])
 			{
-                [multicastDelegate xmppStream:self didReceiveCustomElement:element inContextOfEvent:event];
-				[multicastDelegate xmppStream:self didReceiveCustomElement:element];
+                dispatch_group_t delegateGroup = dispatch_group_create();
+                
+                [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceiveCustomElement:inContextOfEvent:) withDispatchGroup:delegateGroup block:^(id delegate) {
+                    
+                    [delegate xmppStream:self didReceiveCustomElement:element inContextOfEvent:event];
+                }];
+                
+                [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceiveCustomElement:) withDispatchGroup:delegateGroup block:^(id delegate) {
+                    
+                    [delegate xmppStream:self didReceiveCustomElement:element];
+                }];
+                
+                dispatch_group_notify(delegateGroup, xmppQueue, ^{
+                    
+                    [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+                });
 			}
 			else
 			{
-				[multicastDelegate xmppStream:self didReceiveError:element];
+                dispatch_group_t delegateGroup = dispatch_group_create();
+                
+                [[multicastDelegate delegateEnumerator] invokeDelegatesForSelector:@selector(xmppStream:didReceiveError:) withDispatchGroup:delegateGroup block:^(id delegate) {
+                    
+                    [delegate xmppStream:self didReceiveError:element];
+                }];
+                
+                dispatch_group_notify(delegateGroup, xmppQueue, ^{
+                    
+                    [multicastDelegate xmppStream:self didFinishProcessingElementEvent:event];
+                });
 			}
 		}
 	}};

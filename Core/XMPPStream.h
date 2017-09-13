@@ -1105,6 +1105,12 @@ extern const NSTimeInterval XMPPStreamTimeoutNone;
 - (void)xmppStream:(XMPPStream *)sender didFailToSendPresence:(XMPPPresence *)presence inContextOfEventWithID:(NSString *)eventID error:(NSError *)error;
 
 /**
+ * This method is invoked after all delegates return from xmppStream:didSendXXX:/xmppStream:didReceiveXXX: callbacks for a given event.
+ * It is not invoked in case of send failures, only didFailToSendXXX: callbacks are used.
+**/
+- (void)xmppStream:(XMPPStream *)sender didFinishProcessingElementEvent:(XMPPElementEvent *)event;
+
+/**
  * This method is called if the XMPP Stream's jid changes.
 **/
 - (void)xmppStreamDidChangeMyJID:(XMPPStream *)xmppStream;
