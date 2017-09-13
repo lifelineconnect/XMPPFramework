@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "XMPPMockStream.h"
 @import XMPPFramework;
 
 @interface XMPPMessageCoreDataStorageTests : XCTestCase
@@ -24,6 +25,33 @@
     self.storage = [[XMPPMessageCoreDataStorage alloc] initWithDatabaseFilename:NSStringFromSelector(self.invocation.selector)
                                                                    storeOptions:nil];
     self.storage.autoRemovePreviousDatabaseFile = YES;
+}
+
+- (void)testStreamEventStorageActions
+{
+    XMPPStream *mockStream = [[XMPPMockStream alloc] init];
+    
+    // Delayed saving would interfere with the test objective, i.e. ensuring the actions are performed in a single batch
+    self.storage.saveThreshold = 0;
+    
+    for (NSInteger i = 0; i < 5; ++i) {
+        dispatch_async(mockStream.xmppQueue, ^{
+            [self.storage scheduleStorageActionForEventWithID:@"eventID" inStream:mockStream withBlock:^{
+                [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.managedObjectContext];
+            }];
+        });
+    }
+    
+    [self.storage executeBlock:^{
+        [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.managedObjectContext handler:^BOOL(NSNotification * _Nonnull notification) {
+            NSSet *insertedObjects = notification.userInfo[NSInsertedObjectsKey];
+            return insertedObjects.count == 5;
+        }];
+    }];
+    
+    [mockStream injectElement:[[XMPPMessage alloc] init] inContextOfEventWithID:@"eventID"];
+    
+    [self waitForExpectationsWithTimeout:5 handler:nil];
 }
 
 - (void)testBaseNodeTransientPropertyDirectUpdates
