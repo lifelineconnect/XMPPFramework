@@ -402,3 +402,121 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XMPPDelayedDeliveryMessageStorage)
+
+- (void)testDelayedDeliveryDirectStorage
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [messageNode setDelayedDeliveryDate:[NSDate dateWithTimeIntervalSinceReferenceDate:0]
+                          withOriginJID:[XMPPJID jidWithString:@"domain"]
+                      reasonDescription:@"Test"
+                       forStreamEventID:@"eventID"];
+    
+    XCTAssertEqualObjects([messageNode delayedDeliveryDate], [NSDate dateWithTimeIntervalSinceReferenceDate:0]);
+    XCTAssertEqualObjects([messageNode delayedDeliveryOriginJID], [XMPPJID jidWithString:@"domain"]);
+    XCTAssertEqualObjects([messageNode delayedDeliveryReasonDescription], @"Test");
+}
+
+- (void)testDelayedDeliveryStreamEventHandling
+{
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]];
+    }];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeDelayedDeliveryDate:[NSDate dateWithTimeIntervalSinceReferenceDate:-1]
+                                delayOriginJID:[XMPPJID jidWithString:@"domain"]
+                        delayReasonDescription:@"Test"
+                            forIncomingMessage:[[XMPPMessage alloc] init]
+                                     withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSFetchRequest *fetchRequest = [XMPPMessageBaseNode xmpp_fetchRequestInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        NSArray<XMPPMessageBaseNode *> *fetchResult = [self.storage.mainThreadManagedObjectContext xmpp_executeForcedSuccessFetchRequest:fetchRequest];
+        
+        XCTAssertEqual(fetchResult.count, 1);
+        XCTAssertEqualObjects([fetchResult.firstObject delayedDeliveryDate], [NSDate dateWithTimeIntervalSinceReferenceDate:-1]);
+        XCTAssertEqualObjects([fetchResult.firstObject delayedDeliveryOriginJID], [XMPPJID jidWithString:@"domain"]);
+        XCTAssertEqualObjects([fetchResult.firstObject delayedDeliveryReasonDescription], @"Test");
+    }];
+}
+
+- (void)testDelayedDeliveryTimestampMessageContextFetch
+{
+    for (NSString *expectedMessageID in @[@"shorterDelayMessageID", @"longerDelayMessageID"]) {
+        [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+            return [object isKindOfClass:[XMPPMessageBaseNode class]] && [[object stanzaID] isEqualToString:expectedMessageID];
+        }];
+    }
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"earlierEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeDelayedDeliveryDate:[NSDate dateWithTimeIntervalSinceReferenceDate:-1]
+                                delayOriginJID:[XMPPJID jidWithString:@"domain"]
+                        delayReasonDescription:@"Test"
+                            forIncomingMessage:[[XMPPMessage alloc] initWithType:@"chat" elementID:@"shorterDelayMessageID"]
+                                     withEvent:fakeEvent];
+    }];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"laterEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:1] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeDelayedDeliveryDate:[NSDate dateWithTimeIntervalSinceReferenceDate:-2]
+                                delayOriginJID:[XMPPJID jidWithString:@"domain"]
+                        delayReasonDescription:@"Test"
+                            forIncomingMessage:[[XMPPMessage alloc] initWithType:@"chat" elementID:@"longerDelayMessageID"]
+                                     withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSFetchRequest *fetchRequest = [XMPPMessageBaseNode requestTimestampContextWithPredicate:[XMPPMessageBaseNode delayedDeliveryContextPredicate]
+                                                                                inAscendingOrder:YES
+                                                                        fromManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        NSArray<id<XMPPMessageContextFetchRequestResult>> *result = [self.storage.mainThreadManagedObjectContext executeFetchRequest:fetchRequest error:NULL];
+        
+        XCTAssertEqual(result.count, 2);
+        XCTAssertEqualObjects(result[0].relevantMessageNode.stanzaID, @"longerDelayMessageID");
+        XCTAssertEqualObjects(result[1].relevantMessageNode.stanzaID, @"shorterDelayMessageID");
+    }];
+}
+
+- (void)testDelayedDeliveryStreamTimestampDisplacementMessageContextFetch
+{
+    for (NSString *expectedMessageID in @[@"liveMessageID", @"delayedMessageID"]) {
+        [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+            return [object isKindOfClass:[XMPPMessageBaseNode class]] && [[object stanzaID] isEqualToString:expectedMessageID];
+        }];
+    }
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"liveMessageEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage scheduleStorageActionForEventWithID:fakeEvent.uniqueID inStream:fakeEvent.xmppStream withBlock:^{
+            [XMPPMessageBaseNode findOrCreateForIncomingMessageStreamEventID:fakeEvent.uniqueID
+                                                                   streamJID:fakeEvent.myJID
+                                                                 withMessage:[[XMPPMessage alloc] initWithType:@"chat" elementID:@"liveMessageID"]
+                                                                   timestamp:fakeEvent.timestamp
+                                                      inManagedObjectContext:self.storage.managedObjectContext];
+        }];
+    }];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"delayedMessageEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:1] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeDelayedDeliveryDate:[NSDate dateWithTimeIntervalSinceReferenceDate:-1]
+                                delayOriginJID:[XMPPJID jidWithString:@"domain"]
+                        delayReasonDescription:@"Test"
+                            forIncomingMessage:[[XMPPMessage alloc] initWithType:@"chat" elementID:@"delayedMessageID"]
+                                     withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSPredicate *predicate = [NSCompoundPredicate orPredicateWithSubpredicates:@[[XMPPMessageBaseNode streamTimestampContextPredicate],
+                                                                                     [XMPPMessageBaseNode delayedDeliveryContextPredicate]]];
+        NSFetchRequest *fetchRequest = [XMPPMessageBaseNode requestTimestampContextWithPredicate:predicate
+                                                                                inAscendingOrder:YES
+                                                                        fromManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        NSArray<id<XMPPMessageContextFetchRequestResult>> *result = [self.storage.mainThreadManagedObjectContext executeFetchRequest:fetchRequest error:NULL];
+        
+        XCTAssertEqual(result.count, 2);
+        XCTAssertEqualObjects(result[0].relevantMessageNode.stanzaID, @"delayedMessageID");
+        XCTAssertEqualObjects(result[1].relevantMessageNode.stanzaID, @"liveMessageID");
+    }];
+}
+
+@end
