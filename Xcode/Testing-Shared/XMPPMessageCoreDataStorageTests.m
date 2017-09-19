@@ -32,9 +32,8 @@
     // Delayed saving would interfere with the test objective, i.e. ensuring the actions are performed in a single batch
     self.storage.saveThreshold = 0;
     
-    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:^BOOL(NSNotification * _Nonnull notification) {
-        NSSet *insertedObjects = notification.userInfo[NSInsertedObjectsKey];
-        return insertedObjects.count == 5;
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:5 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]];
     }];
     
     [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
@@ -69,7 +68,9 @@
     
     [self.storage.mainThreadManagedObjectContext save:NULL];
     
-    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSRefreshedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]];
+    }];
     
     [self.storage scheduleBlock:^{
         XMPPMessageBaseNode *storageContextMessageNode = [self.storage.managedObjectContext objectWithID:messageNode.objectID];
@@ -387,6 +388,17 @@
         XCTAssertEqualObjects([message thread], @"thread");
         XCTAssertEqualObjects([message type], typeString);
     }
+}
+
+- (XCTestExpectation *)expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:(NSString *)userInfoKey count:(NSInteger)expectedObjectCount handler:(BOOL (^)(__kindof NSManagedObject *object))handler
+{
+    return [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification
+                                     object:self.storage.mainThreadManagedObjectContext
+                                    handler:^BOOL(NSNotification * _Nonnull notification) {
+                                        return [notification.userInfo[userInfoKey] objectsPassingTest:^BOOL(id  _Nonnull obj, BOOL * _Nonnull stop) {
+                                            return handler ? handler(obj) : YES;
+                                        }].count == expectedObjectCount;
+                                    }];
 }
 
 @end
