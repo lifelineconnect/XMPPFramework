@@ -14,12 +14,17 @@
 #define XMLNS_XMPP_MAM @"urn:xmpp:mam:1"
 
 @interface XMPPMessageArchiveManagement()
+
 @property (strong, nonatomic) NSString *queryID;
+@property (strong, nonatomic) NSMutableDictionary<NSString *, NSXMLElement *> *resultSetPageElementsIndex;
+@property (strong, nonatomic) dispatch_group_t resultSetPageProcessingGroup;
+
 @end
 
 @implementation XMPPMessageArchiveManagement
 
 @synthesize resultAutomaticPagingPageSize=_resultAutomaticPagingPageSize;
+@synthesize submitsPayloadMessagesForStreamProcessing=_submitsPayloadMessagesForStreamProcessing;
 
 - (NSInteger)resultAutomaticPagingPageSize
 {
@@ -41,6 +46,34 @@
 {
     dispatch_block_t block = ^{
         _resultAutomaticPagingPageSize = resultAutomaticPagingPageSize;
+    };
+    
+    if (dispatch_get_specific(moduleQueueTag))
+        block();
+    else
+        dispatch_async(moduleQueue, block);
+}
+
+- (BOOL)submitsPayloadMessagesForStreamProcessing
+{
+    __block BOOL result = NO;
+    
+    dispatch_block_t block = ^{
+        result = _submitsPayloadMessagesForStreamProcessing;
+    };
+    
+    if (dispatch_get_specific(moduleQueueTag))
+        block();
+    else
+        dispatch_sync(moduleQueue, block);
+    
+    return result;
+}
+
+- (void)setSubmitsPayloadMessagesForStreamProcessing:(BOOL)submitsPayloadMessagesForStreamProcessing
+{
+    dispatch_block_t block = ^{
+        _submitsPayloadMessagesForStreamProcessing = submitsPayloadMessagesForStreamProcessing;
     };
     
     if (dispatch_get_specific(moduleQueueTag))
@@ -76,6 +109,8 @@
 		}
 
 		self.queryID = [XMPPStream generateUUID];
+        self.resultSetPageElementsIndex = [[NSMutableDictionary alloc] init];
+        self.resultSetPageProcessingGroup = dispatch_group_create();
 		
 		NSXMLElement *queryElement = [NSXMLElement elementWithName:@"query" xmlns:XMLNS_XMPP_MAM];
 		[queryElement addAttributeWithName:@"queryid" stringValue:self.queryID];
@@ -105,28 +140,44 @@
 
 - (void)handleMessageArchiveIQ:(XMPPIQ *)iq withInfo:(XMPPBasicTrackingInfo *)trackerInfo {
 	
-	if ([[iq type] isEqualToString:@"result"]) {
-		
-		NSXMLElement *finElement = [iq elementForName:@"fin" xmlns:XMLNS_XMPP_MAM];
-		NSXMLElement *setElement = [finElement elementForName:@"set" xmlns:@"http://jabber.org/protocol/rsm"];
-		
-        XMPPResultSet *resultSet = [XMPPResultSet resultSetFromElement:setElement];
-        NSString *lastId = [resultSet elementForName:@"last"].stringValue;
-        
-        if (self.resultAutomaticPagingPageSize == 0 || [finElement attributeBoolValueForName:@"complete"] || !lastId) {
-            [multicastDelegate xmppMessageArchiveManagement:self didFinishReceivingMessagesWithSet:resultSet];
-            return;
+    NSString *finalizedQueryID = self.queryID;
+    
+    dispatch_group_notify(self.resultSetPageProcessingGroup, self.moduleQueue, ^{
+        if ([finalizedQueryID isEqualToString:self.queryID]) {
+            [self finalizeMessageArchiveQuery];
         }
         
-        XMPPIQ *originalIq = [XMPPIQ iqFromElement:[trackerInfo element]];
-        XMPPJID *originalArchiveJID = [originalIq to];
-        NSXMLElement *originalFormElement = [[[originalIq elementForName:@"query"] elementForName:@"x"] copy];
-        XMPPResultSet *pagingResultSet = [[XMPPResultSet alloc] initWithMax:self.resultAutomaticPagingPageSize after:lastId];
-        
-        [self retrieveMessageArchiveAt:originalArchiveJID withFormElement:originalFormElement resultSet:pagingResultSet];
-	} else {
-		[multicastDelegate xmppMessageArchiveManagement:self didFailToReceiveMessages:iq];
-	}
+        if ([[iq type] isEqualToString:@"result"]) {
+            NSXMLElement *finElement = [iq elementForName:@"fin" xmlns:XMLNS_XMPP_MAM];
+            NSXMLElement *setElement = [finElement elementForName:@"set" xmlns:@"http://jabber.org/protocol/rsm"];
+            
+            XMPPResultSet *resultSet = [XMPPResultSet resultSetFromElement:setElement];
+            [multicastDelegate xmppMessageArchiveManagement:self didFinishReceivingMessagesWithSet:resultSet];
+            
+            NSString *lastId = [resultSet elementForName:@"last"].stringValue;
+            if (self.resultAutomaticPagingPageSize != 0 && ![finElement attributeBoolValueForName:@"complete"] && lastId) {
+                [self continueAutomaticPagingWithOriginalIQ:[XMPPIQ iqFromElement:[trackerInfo element]] lastResultID:lastId];
+            }
+        } else {
+            [multicastDelegate xmppMessageArchiveManagement:self didFailToReceiveMessages:iq];
+        }
+    });
+}
+
+- (void)finalizeMessageArchiveQuery
+{
+    self.queryID = nil;
+    self.resultSetPageElementsIndex = nil;
+    self.resultSetPageProcessingGroup = nil;
+}
+
+- (void)continueAutomaticPagingWithOriginalIQ:(XMPPIQ *)originalIQ lastResultID:(NSString *)lastResultID
+{
+    XMPPJID *originalArchiveJID = [originalIQ to];
+    NSXMLElement *originalFormElement = [[[originalIQ elementForName:@"query"] elementForName:@"x"] copy];
+    XMPPResultSet *pagingResultSet = [[XMPPResultSet alloc] initWithMax:self.resultAutomaticPagingPageSize after:lastResultID];
+    
+    [self retrieveMessageArchiveAt:originalArchiveJID withFormElement:originalFormElement resultSet:pagingResultSet];
 }
 
 + (NSXMLElement *)fieldWithVar:(NSString *)var type:(NSString *)type andValue:(NSString *)value {
@@ -219,15 +270,34 @@
 	return NO;
 }
 
-- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message {
+- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event
+{
 	NSXMLElement *result = [message elementForName:@"result" xmlns:XMLNS_XMPP_MAM];
-	BOOL forwarded = [result hasForwardedStanza];
-	
 	NSString *queryID = [result attributeForName:@"queryid"].stringValue;
-	
-	if (forwarded && [queryID isEqualToString:self.queryID]) {
-		[multicastDelegate xmppMessageArchiveManagement:self didReceiveMAMMessage:message];
-	}
+    if ([queryID isEqualToString:self.queryID]) {
+        [self processContainerMessage:message withResultElement:result inContextOfStreamEvent:event];
+    }
+}
+
+- (void)xmppStream:(XMPPStream *)sender didFinishProcessingElementEvent:(XMPPElementEvent *)event
+{
+    if (self.resultSetPageElementsIndex[event.uniqueID]) {
+        dispatch_group_leave(self.resultSetPageProcessingGroup);
+    }
+}
+
+- (void)processContainerMessage:(XMPPMessage *)message withResultElement:(NSXMLElement *)result inContextOfStreamEvent:(XMPPElementEvent *)event
+{
+    NSString *processingID = [self.xmppStream generateUUID];
+    self.resultSetPageElementsIndex[processingID] = result;
+    
+    XMPPMessage *forwardedMessage = [result forwardedMessage];
+    if (forwardedMessage && self.submitsPayloadMessagesForStreamProcessing) {
+        dispatch_group_enter(self.resultSetPageProcessingGroup);
+        [self.xmppStream injectElement:forwardedMessage inContextOfEventWithID:processingID];
+    }
+    
+    [multicastDelegate xmppMessageArchiveManagement:self didReceiveMAMMessage:message];
 }
 
 @end

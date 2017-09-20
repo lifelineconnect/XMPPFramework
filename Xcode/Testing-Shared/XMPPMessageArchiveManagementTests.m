@@ -9,7 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "XMPPMockStream.h"
 
-@interface XMPPMessageArchiveManagementTests : XCTestCase <XMPPMessageArchiveManagementDelegate>
+@interface XMPPMessageArchiveManagementTests : XCTestCase <XMPPMessageArchiveManagementDelegate, XMPPStreamDelegate>
 
 @property (nonatomic, strong) XCTestExpectation *delegateExpectation;
 
@@ -304,6 +304,38 @@
             XCTFail(@"Expectation Failed with error: %@", error);
         }
     }];
+}
+
+- (void)testPayloadMessageSubmission {
+    self.delegateExpectation = [self expectationWithDescription:@"Payload message received"];
+    
+    XMPPMockStream *streamTest = [[XMPPMockStream alloc] init];
+    [streamTest addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    
+    __weak XMPPMockStream *weakStreamTest = streamTest;
+    streamTest.elementReceived = ^void(NSXMLElement *element) {
+        XMPPIQ *iq = [XMPPIQ iqFromElement:element];
+        NSString *queryID = [[iq elementForName:@"query"] attributeStringValueForName:@"queryid"];
+        XMPPMessage *fakeMessage = [self fakeMessageWithQueryID:queryID eid:@"responseID"];
+        [weakStreamTest fakeMessageResponse:fakeMessage];
+    };
+    
+    XMPPMessageArchiveManagement *messageArchiveManagement = [[XMPPMessageArchiveManagement alloc] init];
+    messageArchiveManagement.submitsPayloadMessagesForStreamProcessing = YES;
+    [messageArchiveManagement activate:streamTest];
+    [messageArchiveManagement retrieveMessageArchiveWithFields:nil withResultSet:nil];
+    
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        if (error) {
+            XCTFail(@"Expectation Failed with error: %@", error);
+        }
+    }];
+}
+
+- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message {
+    if ([[message body] isEqualToString:@"Hail to thee"]) {
+        [self.delegateExpectation fulfill];
+    }
 }
 
 - (XMPPMessage *)fakeMessageWithQueryID:(NSString *)queryID eid:(NSString*)eid{

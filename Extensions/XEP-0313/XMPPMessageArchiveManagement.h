@@ -23,6 +23,12 @@
  */
 @property (readwrite, assign) NSInteger resultAutomaticPagingPageSize;
 
+/**
+ When enabled, original messages unwrapped from query results will be injected back into the stream, exposing them to other modules.
+ Disabled by default.
+ */
+@property (readwrite, assign) BOOL submitsPayloadMessagesForStreamProcessing;
+
 - (void)retrieveMessageArchiveWithFields:(NSArray *)fields withResultSet:(XMPPResultSet *)resultSet;
 - (void)retrieveMessageArchiveAt:(XMPPJID *)archiveJID withFields:(NSArray *)fields withResultSet:(XMPPResultSet *)resultSet;
 - (void)retrieveFormFields;
