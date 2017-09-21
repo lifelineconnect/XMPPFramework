@@ -46,6 +46,7 @@ typedef NS_ENUM(int16_t, XMPPMessageType) {
 + (instancetype)insertForOutgoingMessageInManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 + (nullable XMPPMessageBaseNode *)findForOutgoingMessageStreamEventID:(NSString *)outgoingMessageStreamEventID
                                                inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
++ (nullable XMPPMessageBaseNode *)findWithUniqueStanzaID:(NSString *)stanzaID inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext;
 
 + (NSFetchRequest<id<XMPPMessageContextFetchRequestResult>> *)requestTimestampContextWithPredicate:(NSPredicate *)predicate
                                                                               inAscendingOrder:(BOOL)isInAscendingOrder

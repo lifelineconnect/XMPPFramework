@@ -273,6 +273,15 @@ static XMPPMessageContextTimestampItemTag const XMPPMessageContextRetiredStreamT
     return localInsertionItem.contextNode.messageNode;
 }
 
++ (XMPPMessageBaseNode *)findWithUniqueStanzaID:(NSString *)stanzaID inManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
+{
+    NSFetchRequest *fetchRequest = [XMPPMessageBaseNode xmpp_fetchRequestInManagedObjectContext:managedObjectContext];
+    fetchRequest.predicate = [NSPredicate predicateWithFormat:@"%K = %@", NSStringFromSelector(@selector(stanzaID)), stanzaID];
+    
+    NSArray *fetchResult = [managedObjectContext xmpp_executeForcedSuccessFetchRequest:fetchRequest];
+    return fetchResult.count == 1 ? fetchResult.firstObject : nil;
+}
+
 + (NSFetchRequest<id<XMPPMessageContextFetchRequestResult>> *)requestTimestampContextWithPredicate:(NSPredicate *)predicate inAscendingOrder:(BOOL)isInAscendingOrder fromManagedObjectContext:(NSManagedObjectContext *)managedObjectContext
 {
     NSFetchRequest *fetchRequest = [XMPPMessageContextTimestampItem xmpp_fetchRequestInManagedObjectContext:managedObjectContext];
