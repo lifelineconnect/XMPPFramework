@@ -9,7 +9,7 @@
 #import <XCTest/XCTest.h>
 #import "XMPPMockStream.h"
 
-@interface XMPPMessageArchiveManagementTests : XCTestCase <XMPPMessageArchiveManagementDelegate, XMPPStreamDelegate>
+@interface XMPPMessageArchiveManagementTests : XCTestCase <XMPPMessageArchiveManagementDelegate, XMPPStreamDelegate, XMPPMessageArchiveManagementLocalStorage>
 
 @property (nonatomic, strong) XCTestExpectation *delegateExpectation;
 
@@ -334,6 +334,51 @@
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message {
     if ([[message body] isEqualToString:@"Hail to thee"]) {
+        [self.delegateExpectation fulfill];
+    }
+}
+
+- (void)testLocalStorage {
+    self.delegateExpectation = [self expectationWithDescription:@"Local storage updated"];
+    self.delegateExpectation.expectedFulfillmentCount = 2;
+    
+    XMPPMockStream *streamTest = [[XMPPMockStream alloc] init];
+    
+    __weak XMPPMockStream *weakStreamTest = streamTest;
+    streamTest.elementReceived = ^void(NSXMLElement *element) {
+        XMPPIQ *iq = [XMPPIQ iqFromElement:element];
+        NSString *queryID = [[iq elementForName:@"query"] attributeStringValueForName:@"queryid"];
+        XMPPMessage *fakeMessage = [self fakeMessageWithQueryID:queryID eid:@"responseID"];
+        [weakStreamTest fakeMessageResponse:fakeMessage];
+        [weakStreamTest fakeIQResponse:[self fakeIQWithID:[iq elementID]]];
+    };
+    
+    XMPPMessageArchiveManagement *messageArchiveManagement = [[XMPPMessageArchiveManagement alloc] initWithLocalStorage:self dispatchQueue:nil];
+    [messageArchiveManagement activate:streamTest];
+    [messageArchiveManagement retrieveMessageArchiveWithFields:nil withResultSet:nil];
+    
+    [self waitForExpectationsWithTimeout:1 handler:^(NSError * _Nullable error) {
+        if (error) {
+            XCTFail(@"Expectation Failed with error: %@", error);
+        }
+    }];
+}
+
+- (BOOL)configureWithParent:(XMPPMessageArchiveManagement *)parent queue:(dispatch_queue_t)queue
+{
+    return YES;
+}
+
+- (void)storePayloadMessage:(XMPPMessage *)payloadMessage withMessageArchiveID:(NSString *)archiveID timestamp:(NSDate *)timestamp event:(XMPPElementEvent *)event
+{
+    if ([[payloadMessage body] isEqualToString:@"Hail to thee"] && [archiveID isEqualToString:@"28482-98726-73623"] && [timestamp isEqualToDate:[NSDate dateWithXmppDateTimeString:@"2010-07-10T23:08:25Z"]]) {
+        [self.delegateExpectation fulfill];
+    }
+}
+
+- (void)finalizeResultSetPageWithMessageArchiveIDs:(NSArray<NSString *> *)archiveIDs
+{
+    if ([archiveIDs isEqualToArray:@[@"28482-98726-73623"]]) {
         [self.delegateExpectation fulfill];
     }
 }

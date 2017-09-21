@@ -161,6 +161,7 @@
 #import "XMPPRoomLightMessageCoreDataStorageObject.h"
 #import "XMPPMessageCoreDataStorage.h"
 #import "XMPPMessageCoreDataStorage+Protected.h"
+#import "XMPPMessageCoreDataStorage+XEP_0313.h"
 #import "XMPPMessageBaseNode.h"
 #import "XMPPMessageBaseNode+Protected.h"
 #import "XMPPMessageBaseNode+ContextHelpers.h"

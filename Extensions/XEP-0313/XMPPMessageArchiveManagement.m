@@ -15,6 +15,7 @@
 
 @interface XMPPMessageArchiveManagement()
 
+@property (strong, nonatomic, readonly) id<XMPPMessageArchiveManagementLocalStorage> localStorage;
 @property (strong, nonatomic) NSString *queryID;
 @property (strong, nonatomic) NSMutableDictionary<NSString *, NSXMLElement *> *resultSetPageElementsIndex;
 @property (strong, nonatomic) dispatch_group_t resultSetPageProcessingGroup;
@@ -80,6 +81,23 @@
         block();
     else
         dispatch_async(moduleQueue, block);
+}
+
+- (instancetype)initWithLocalStorage:(id<XMPPMessageArchiveManagementLocalStorage>)localStorage dispatchQueue:(dispatch_queue_t)dispatchQueue
+{
+    self = [super initWithDispatchQueue:dispatchQueue];
+    if (self) {
+        _localStorage = localStorage;
+        if (_localStorage && ![_localStorage configureWithParent:self queue:moduleQueue]) {
+            self = nil;
+        }
+    }
+    return self;
+}
+
+- (id)initWithDispatchQueue:(dispatch_queue_t)queue
+{
+    return [self initWithLocalStorage:nil dispatchQueue:queue];
 }
 
 - (void)retrieveMessageArchiveWithFields:(NSArray *)fields withResultSet:(XMPPResultSet *)resultSet {
@@ -166,6 +184,15 @@
 
 - (void)finalizeMessageArchiveQuery
 {
+    NSMutableArray *pageArchiveIDs = [[NSMutableArray alloc] init];
+    for (NSXMLElement *result in self.resultSetPageElementsIndex.allValues) {
+        [pageArchiveIDs addObject:[result attributeStringValueForName:@"id"]];
+    }
+    
+    if (pageArchiveIDs.count > 0) {
+        [self.localStorage finalizeResultSetPageWithMessageArchiveIDs:pageArchiveIDs];
+    }
+    
     self.queryID = nil;
     self.resultSetPageElementsIndex = nil;
     self.resultSetPageProcessingGroup = nil;
@@ -277,6 +304,11 @@
     if ([queryID isEqualToString:self.queryID]) {
         [self processContainerMessage:message withResultElement:result inContextOfStreamEvent:event];
     }
+    
+    NSXMLElement *indexedResult = self.resultSetPageElementsIndex[event.uniqueID];
+    if (indexedResult) {
+        [self processPayloadMessage:message fromResultElement:indexedResult inContextOfStreamEvent:event];
+    }
 }
 
 - (void)xmppStream:(XMPPStream *)sender didFinishProcessingElementEvent:(XMPPElementEvent *)event
@@ -295,9 +327,19 @@
     if (forwardedMessage && self.submitsPayloadMessagesForStreamProcessing) {
         dispatch_group_enter(self.resultSetPageProcessingGroup);
         [self.xmppStream injectElement:forwardedMessage inContextOfEventWithID:processingID];
+    } else {
+        [self processPayloadMessage:forwardedMessage fromResultElement:result inContextOfStreamEvent:event];
     }
     
     [multicastDelegate xmppMessageArchiveManagement:self didReceiveMAMMessage:message];
+}
+
+- (void)processPayloadMessage:(XMPPMessage *)message fromResultElement:(NSXMLElement *)result inContextOfStreamEvent:(XMPPElementEvent *)event
+{
+    [self.localStorage storePayloadMessage:message
+                      withMessageArchiveID:[result attributeStringValueForName:@"id"]
+                                 timestamp:[result forwardedStanzaDelayedDeliveryDate]
+                                     event:event];
 }
 
 @end

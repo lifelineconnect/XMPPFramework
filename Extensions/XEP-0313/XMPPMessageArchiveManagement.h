@@ -9,8 +9,10 @@
 #import "XMPPResultSet.h"
 #import "XMPPIQ.h"
 
+@protocol XMPPMessageArchiveManagementLocalStorage;
 @class XMPPIDTracker;
 @class XMPPMessage;
+@class XMPPElementEvent;
 
 @interface XMPPMessageArchiveManagement : XMPPModule {
 	XMPPIDTracker *xmppIDTracker;
@@ -29,10 +31,24 @@
  */
 @property (readwrite, assign) BOOL submitsPayloadMessagesForStreamProcessing;
 
+- (instancetype)initWithLocalStorage:(id<XMPPMessageArchiveManagementLocalStorage>)localStorage dispatchQueue:(dispatch_queue_t)dispatchQueue;
+
 - (void)retrieveMessageArchiveWithFields:(NSArray *)fields withResultSet:(XMPPResultSet *)resultSet;
 - (void)retrieveMessageArchiveAt:(XMPPJID *)archiveJID withFields:(NSArray *)fields withResultSet:(XMPPResultSet *)resultSet;
 - (void)retrieveFormFields;
 + (NSXMLElement *)fieldWithVar:(NSString *)var type:(NSString *)type andValue:(NSString *)value;
+
+@end
+
+@protocol XMPPMessageArchiveManagementLocalStorage <NSObject>
+
+- (BOOL)configureWithParent:(XMPPMessageArchiveManagement *)parent queue:(dispatch_queue_t)queue;
+
+- (void)storePayloadMessage:(XMPPMessage *)payloadMessage
+       withMessageArchiveID:(NSString *)archiveID
+                  timestamp:(NSDate *)timestamp
+                      event:(XMPPElementEvent *)event;
+- (void)finalizeResultSetPageWithMessageArchiveIDs:(NSArray<NSString *> *)archiveIDs;
 
 @end
 
