@@ -50,6 +50,7 @@ typedef NSString * XMPPMessageContextTimestampItemTag NS_EXTENSIBLE_STRING_ENUM;
 @property (nonatomic, copy, nullable) NSString *value;
 
 + (NSPredicate *)tagPredicateWithValue:(XMPPMessageContextStringItemTag)tag;
++ (NSPredicate *)stringPredicateWithValue:(NSString *)value;
 
 @end
 

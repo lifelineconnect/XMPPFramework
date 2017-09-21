@@ -183,6 +183,11 @@
     return [super tagPredicateWithValue:value];
 }
 
++ (NSPredicate *)stringPredicateWithValue:(NSString *)value
+{
+    return [NSPredicate predicateWithFormat:@"%K = %@", NSStringFromSelector(@selector(value)), value];
+}
+
 @end
 
 @implementation XMPPMessageContextTimestampItem
