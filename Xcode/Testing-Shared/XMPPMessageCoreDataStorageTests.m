@@ -402,3 +402,54 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XMPPOutOfBandResourceMessagingStorage)
+
+- (void)testOutOfBandResourceAssignment
+{
+    XMPPMessageBaseNode *resourceWithDescriptionMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [resourceWithDescriptionMessageNode assignOutOfBandResourceWithDescription:@"A license to Jabber!" forStreamEventID:@"eventID1"];
+    
+    XMPPMessageBaseNode *resourceWithoutDescriptionMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [resourceWithoutDescriptionMessageNode assignOutOfBandResourceWithDescription:nil forStreamEventID:@"eventID2"];
+    
+    XCTAssertNotNil([resourceWithDescriptionMessageNode outOfBandResourceInternalID]);
+    XCTAssertEqualObjects([resourceWithDescriptionMessageNode outOfBandResourceDescription], @"A license to Jabber!");
+    XCTAssertNotNil([resourceWithoutDescriptionMessageNode outOfBandResourceInternalID]);
+    XCTAssertNil([resourceWithoutDescriptionMessageNode outOfBandResourceDescription]);
+}
+
+- (void)testOutOfBandResourceCompletion
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [messageNode assignOutOfBandResourceWithDescription:@"A license to Jabber!" forStreamEventID:@"eventID"];
+    [messageNode setAssignedOutOfBandResourceURIString:@"http://www.jabber.org/images/psa-license.jpg"];
+    
+    XCTAssertEqualObjects([messageNode outOfBandResourceURIString], @"http://www.jabber.org/images/psa-license.jpg");
+}
+
+- (void)testOutOfBandResourceIncomingMessageStorage
+{
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]];
+    }];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeOutOfBandResourceURIString:@"http://www.jabber.org/images/psa-license.jpg"
+                                          description:@"A license to Jabber!"
+                                   forIncomingMessage:[[XMPPMessage alloc] init]
+                                            withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSFetchRequest *fetchRequest = [XMPPMessageBaseNode xmpp_fetchRequestInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        NSArray<XMPPMessageBaseNode *> *fetchResult = [self.storage.mainThreadManagedObjectContext xmpp_executeForcedSuccessFetchRequest:fetchRequest];
+        
+        XCTAssertEqual(fetchResult.count, 1);
+        XCTAssertNotNil([fetchResult.firstObject outOfBandResourceInternalID]);
+        XCTAssertEqualObjects([fetchResult.firstObject outOfBandResourceURIString], @"http://www.jabber.org/images/psa-license.jpg");
+        XCTAssertEqualObjects([fetchResult.firstObject outOfBandResourceDescription], @"A license to Jabber!");
+    }];
+}
+
+@end
