@@ -402,3 +402,54 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XMPPMessageDeliveryReceiptsStorage)
+
+- (void)testMessageDeliveryReceiptStorage
+{
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]] && [[object stanzaID] isEqualToString:@"deliveryReceiptMessageID"];
+    }];
+    
+    [self.storage scheduleBlock:^{
+        XMPPMessageBaseNode *fakeSentMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.managedObjectContext];
+        fakeSentMessageNode.stanzaID = @"sentMessageID";
+    }];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"deliveryReceiptEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeDeliveryReceiptForMessageID:@"sentMessageID"
+                                     receivedInMessage:[[XMPPMessage alloc] initWithType:@"normal" elementID:@"deliveryReceiptMessageID"]
+                                             withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XMPPMessageBaseNode *fakeSentMessageNode = [XMPPMessageBaseNode findWithUniqueStanzaID:@"sentMessageID"
+                                                                        inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        XCTAssertTrue([fakeSentMessageNode hasAssociatedDeliveryReceiptResponseMessage]);
+        
+        XMPPMessageBaseNode *deliveryReceiptMessageNode = [XMPPMessageBaseNode findWithUniqueStanzaID:@"deliveryReceiptMessageID"
+                                                                               inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        XCTAssertEqualObjects([deliveryReceiptMessageNode messageDeliveryReceiptResponseID], @"sentMessageID");
+    }];
+}
+
+- (void)testMessageDeliveryReceiptLookup
+{
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]];
+    }];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"deliveryReceiptEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeDeliveryReceiptForMessageID:@"deliveredMessageID"
+                                     receivedInMessage:[[XMPPMessage alloc] initWithType:@"normal" elementID:@"deliveryReceiptMessageID"]
+                                             withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XMPPMessageBaseNode *deliveryReceiptMessageNode = [XMPPMessageBaseNode findDeliveryReceiptResponseForMessageWithID:@"deliveredMessageID"
+                                                                                                    inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        XCTAssertEqualObjects(deliveryReceiptMessageNode.stanzaID, @"deliveryReceiptMessageID");
+    }];
+}
+
+@end
