@@ -2,6 +2,9 @@
 
 #define _XMPP_MESSAGE_DELIVERY_RECEIPTS_H
 
+@protocol XMPPMessageDeliveryReceiptsStorage;
+@class XMPPMessage, XMPPElementEvent;
+
 /**
  * XMPPMessageDeliveryReceipts can be configured to automatically send delivery receipts and requests in accordance to XEP-0184
 **/
@@ -28,5 +31,23 @@
 **/
 
 @property (assign) BOOL autoSendMessageDeliveryReceipts;
+
+- (instancetype)initWithStorage:(id<XMPPMessageDeliveryReceiptsStorage>)storage dispatchQueue:(dispatch_queue_t)queue;
+
+@end
+
+@protocol XMPPMessageDeliveryReceiptsStorage <NSObject>
+
+- (BOOL)configureWithParent:(XMPPMessageDeliveryReceipts *)aParent queue:(dispatch_queue_t)queue;
+- (void)storeDeliveryReceiptForMessageID:(NSString *)deliveredMessageID
+                       receivedInMessage:(XMPPMessage *)receiptMessage
+                               withEvent:(XMPPElementEvent *)event;
+
+@end
+
+@protocol XMPPMessageDeliveryReceiptsDelegate <NSObject>
+
+@optional
+- (void)xmppMessageDeliveryReceipts:(XMPPMessageDeliveryReceipts *)xmppMessageDeliveryReceipts didReceiveReceiptResponseMessage:(XMPPMessage *)message;
 
 @end

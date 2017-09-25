@@ -8,6 +8,12 @@
 
 #define XMLNS_URN_XMPP_RECEIPTS @"urn:xmpp:receipts"
 
+@interface XMPPMessageDeliveryReceipts ()
+
+@property (nonatomic, strong, readonly) id<XMPPMessageDeliveryReceiptsStorage> storage;
+
+@end
+
 @implementation XMPPMessageDeliveryReceipts
 
 @synthesize autoSendMessageDeliveryRequests;
@@ -17,15 +23,25 @@
 #pragma mark Init/Dealloc
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (id)initWithDispatchQueue:(dispatch_queue_t)queue
+- (instancetype)initWithStorage:(id<XMPPMessageDeliveryReceiptsStorage>)storage dispatchQueue:(dispatch_queue_t)queue
 {
     if((self = [super initWithDispatchQueue:queue]))
     {
         autoSendMessageDeliveryRequests = NO;
         autoSendMessageDeliveryReceipts = NO;
+        _storage = storage;
+        if (_storage && ![_storage configureWithParent:self queue:moduleQueue])
+        {
+            self = nil;
+        }
     }
     
     return self;
+}
+
+- (id)initWithDispatchQueue:(dispatch_queue_t)queue
+{
+    return [self initWithStorage:nil dispatchQueue:queue];
 }
 
 
@@ -119,7 +135,7 @@
 #pragma mark XMPPStream Delegate
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
+- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event
 {
     if([message hasReceiptRequest])
     {        
@@ -128,6 +144,15 @@
             XMPPMessage *generatedReceiptResponse = [message generateReceiptResponse];
             [sender sendElement:generatedReceiptResponse];
         }
+    }
+    
+    if ([message hasReceiptResponse])
+    {
+        if ([message receiptResponseID])
+        {
+            [self.storage storeDeliveryReceiptForMessageID:[message receiptResponseID] receivedInMessage:message withEvent:event];
+        }
+        [multicastDelegate xmppMessageDeliveryReceipts:self didReceiveReceiptResponseMessage:message];
     }
 }
 
