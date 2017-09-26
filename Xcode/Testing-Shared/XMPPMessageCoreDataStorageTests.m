@@ -402,3 +402,43 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XEP_0245)
+
+- (void)testMeCommandPrefixDetection
+{
+    XMPPMessageBaseNode *meCommandMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    meCommandMessageNode.body = @"/me shrugs in disgust";
+    
+    XMPPMessageBaseNode *plainMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    plainMessageNode.body = @"Atlas shrugs in disgust";
+    
+    XMPPMessageBaseNode *nonAnchoredMePrefixMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    nonAnchoredMePrefixMessageNode.body = @" /me shrugs in disgust";
+    
+    XCTAssertEqualObjects([meCommandMessageNode meCommandText], @"shrugs in disgust");
+    XCTAssertNil([plainMessageNode meCommandText]);
+    XCTAssertNil([nonAnchoredMePrefixMessageNode meCommandText]);
+}
+
+- (void)testIncomingMessageMeCommandSubjectJID
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    messageNode.fromJID = [XMPPJID jidWithString:@"olympians@chat.gods.lit/Atlas"];
+    messageNode.body = @"/me shrugs in disgust";
+    
+    XCTAssertEqualObjects([messageNode meCommandSubjectJID], [XMPPJID jidWithString:@"olympians@chat.gods.lit/Atlas"]);
+}
+
+- (void)testOutgoingMessageMeCommandSubjectJID
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    messageNode.body = @"/me shrugs in disgust";
+    [messageNode registerOutgoingMessageStreamEventID:@"eventID"];
+    [messageNode registerSentMessageWithStreamJID:[XMPPJID jidWithString:@"atlas@chat.gods.lit"]
+                                        timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0]];
+    
+    XCTAssertEqualObjects([messageNode meCommandSubjectJID], [XMPPJID jidWithString:@"atlas@chat.gods.lit"]);
+}
+
+@end
