@@ -402,3 +402,100 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XMPPLastMessageCorrectionStorage)
+
+- (void)testMessageCorrectionDirectStorage
+{
+    XMPPMessageBaseNode *originalMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    originalMessageNode.stanzaID = @"originalMessageID";
+    
+    XMPPMessageBaseNode *correctedMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [correctedMessageNode assignMessageCorrectionID:@"originalMessageID" forStreamEventID:@"messageCorrectionEventID"];
+    
+    XCTAssertTrue([originalMessageNode hasAssociatedCorrectionMessage]);
+    XCTAssertEqualObjects([correctedMessageNode messageCorrectionID], @"originalMessageID");
+}
+
+- (void)testMessageCorrectionStreamEventHandling
+{
+    for (NSString *expectedMessageID in @[@"originalMessageID", @"correctedMessageID"]) {
+        [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+            return [object isKindOfClass:[XMPPMessageBaseNode class]] && [[object stanzaID] isEqualToString:expectedMessageID];
+        }];
+    }
+    
+    [self.storage scheduleBlock:^{
+        XMPPMessageBaseNode *originalMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.managedObjectContext];
+        originalMessageNode.stanzaID = @"originalMessageID";
+    }];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"messageCorrectionEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeIncomingCorrectedMessage:[[XMPPMessage alloc] initWithType:@"chat" elementID:@"correctedMessageID"]
+                                   forMessageWithID:@"originalMessageID"
+                                          withEvent:fakeEvent];
+    }];
+
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XMPPMessageBaseNode *originalMessageNode = [XMPPMessageBaseNode findWithUniqueStanzaID:@"originalMessageID"
+                                                                        inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        XMPPMessageBaseNode *correctedMessageNode = [XMPPMessageBaseNode findWithUniqueStanzaID:@"correctedMessageID"
+                                                                         inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        
+        XCTAssertTrue([originalMessageNode hasAssociatedCorrectionMessage]);
+        XCTAssertEqualObjects([correctedMessageNode messageCorrectionID], @"originalMessageID");
+    }];
+}
+
+- (void)testMessageCorrectionLookup
+{
+    XMPPMessageBaseNode *originalMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    originalMessageNode.stanzaID = @"originalMessageID";
+    
+    XMPPMessageBaseNode *correctedMessageNode = [XMPPMessageBaseNode xmpp_insertNewObjectInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [correctedMessageNode assignMessageCorrectionID:@"originalMessageID" forStreamEventID:@"messageCorrectionEventID"];
+
+    XMPPMessageBaseNode *lookedUpCorrectedMessageNode = [XMPPMessageBaseNode findCorrectionForMessageWithID:@"originalMessageID"
+                                                                                     inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    
+    XCTAssertEqualObjects(correctedMessageNode, lookedUpCorrectedMessageNode);
+}
+
+- (void)testMessageCorrectionStreamContextFetch
+{
+    for (NSString *expectedMessageID in @[@"originalMessageID", @"correctedMessageID"]) {
+        [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+            return [object isKindOfClass:[XMPPMessageBaseNode class]] && [[object stanzaID] isEqualToString:expectedMessageID];
+        }];
+    }
+    
+    XMPPMockStream *mockStream = [[XMPPMockStream alloc] init];
+    
+    [mockStream performActionInContextOfFakeEventWithID:@"originalMessageEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage scheduleStorageActionForEventWithID:fakeEvent.uniqueID inStream:fakeEvent.xmppStream withBlock:^{
+            [XMPPMessageBaseNode findOrCreateForIncomingMessageStreamEventID:fakeEvent.uniqueID
+                                                                   streamJID:fakeEvent.myJID
+                                                                 withMessage:[[XMPPMessage alloc] initWithType:@"chat" elementID:@"originalMessageID"]
+                                                                   timestamp:fakeEvent.timestamp
+                                                      inManagedObjectContext:self.storage.managedObjectContext];
+        }];
+    }];
+    
+    [mockStream performActionInContextOfFakeEventWithID:@"messageCorrectionEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:1] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeIncomingCorrectedMessage:[[XMPPMessage alloc] initWithType:@"chat" elementID:@"correctedMessageID"]
+                                   forMessageWithID:@"orginalMessageID"
+                                          withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSFetchRequest *fetchRequest = [XMPPMessageBaseNode requestTimestampContextWithPredicate:[XMPPMessageBaseNode streamTimestampContextPredicate]
+                                                                                inAscendingOrder:YES
+                                                                        fromManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        NSArray<id<XMPPMessageContextFetchRequestResult>> *fetchResult = [self.storage.mainThreadManagedObjectContext xmpp_executeForcedSuccessFetchRequest:fetchRequest];
+        
+        XCTAssertEqual(fetchResult.count, 1);
+        XCTAssertEqualObjects([fetchResult.firstObject.relevantMessageNode stanzaID], @"originalMessageID");
+    }];
+}
+
+@end
