@@ -402,3 +402,146 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XMPPMUCLight)
+
+- (void)testIncomingRoomLightMessageHandling
+{
+    XMPPMessage *message = [[XMPPMessage alloc] initWithXMLString:
+                            @"<message id='msg111' type='groupchat'"
+                            @"  from='coven@muclight.shakespeare.lit/hag66@shakespeare.lit'"
+                            @"  to='crone1@shakespeare.lit'>"
+                            @"  <body>Harpier cries: 'tis time, 'tis time.</body>"
+                            @"</message>"
+                                                            error:nil];
+    XMPPRoomLight *room = [[XMPPRoomLight alloc] initWithJID:[XMPPJID jidWithString:@"coven@muclight.shakespeare.lit"]
+                                                    roomname:@"A Dark Cave"];
+    XMPPMockStream *mockStream = [[XMPPMockStream alloc] init];
+    mockStream.myJID = [XMPPJID jidWithString:@"crone1@shakespeare.lit"];
+    
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]];
+    }];
+    
+    [mockStream performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage handleIncomingMessage:message room:room event:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode findWithUniqueStanzaID:@"msg111" inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        
+        XCTAssertNotNil(messageNode);
+        XCTAssertEqualObjects(messageNode.fromJID, [XMPPJID jidWithString:@"coven@muclight.shakespeare.lit/hag66@shakespeare.lit"]);
+        XCTAssertEqualObjects(messageNode.toJID, [XMPPJID jidWithString:@"crone1@shakespeare.lit"]);
+        XCTAssertEqualObjects(messageNode.body, @"Harpier cries: 'tis time, 'tis time.");
+        XCTAssertEqual(messageNode.direction, XMPPMessageDirectionIncoming);
+        XCTAssertEqualObjects(messageNode.stanzaID, @"msg111");
+        XCTAssertEqual(messageNode.type, XMPPMessageTypeGroupchat);
+        XCTAssertEqualObjects([messageNode streamJID], [XMPPJID jidWithString:@"crone1@shakespeare.lit"]);
+        XCTAssertEqualObjects([messageNode streamTimestamp], [NSDate dateWithTimeIntervalSinceReferenceDate:0]);
+    }];
+}
+
+- (void)testOutgoingRoomLightMessageHandling
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    messageNode.stanzaID = @"msg111";
+    [messageNode registerOutgoingMessageStreamEventID:@"eventID"];
+    [self.storage.mainThreadManagedObjectContext save:nil];
+    
+    XMPPMessage *message = [[XMPPMessage alloc] initWithXMLString:
+                            @"<message from='hag66@shakespeare.lit/pda'"
+                            @"         id='msg111'"
+                            @"         to='coven@muclight.shakespeare.lit'"
+                            @"         type='groupchat'>"
+                            @"  <body>Harpier cries: 'tis time, 'tis time.</body>"
+                            @"</message>"
+                                                            error:nil];
+    XMPPRoomLight *room = [[XMPPRoomLight alloc] initWithJID:[XMPPJID jidWithString:@"coven@muclight.shakespeare.lit"]
+                                                    roomname:@"A Dark Cave"];
+    
+    XMPPMockStream *mockStream = [[XMPPMockStream alloc] init];
+    mockStream.myJID = [XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    
+    [mockStream performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage handleOutgoingMessage:message room:room event:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode findWithUniqueStanzaID:@"msg111" inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        
+        XCTAssertEqualObjects([messageNode streamJID], [XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"]);
+        XCTAssertEqualObjects([messageNode streamTimestamp], [NSDate dateWithTimeIntervalSinceReferenceDate:0]);
+    }];
+}
+
+- (void)testPingbackRoomLightMessageHandling
+{
+    XMPPMessageBaseNode *sentMessageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    sentMessageNode.stanzaID = @"msg111";
+    [self.storage.mainThreadManagedObjectContext save:nil];
+    
+    XMPPMessage *pingbackMessage = [[XMPPMessage alloc] initWithXMLString:
+                                    @"<message id='msg111' type='groupchat'"
+                                    @"  from='coven@muclight.shakespeare.lit/hag66@shakespeare.lit'"
+                                    @"  to='crone1@shakespeare.lit'>"
+                                    @"  <body>Harpier cries: 'tis time, 'tis time.</body>"
+                                    @"</message>"
+                                                                    error:nil];
+    XMPPRoomLight *room = [[XMPPRoomLight alloc] initWithJID:[XMPPJID jidWithString:@"coven@muclight.shakespeare.lit"]
+                                                    roomname:@"A Dark Cave"];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification
+                              object:self.storage.mainThreadManagedObjectContext
+                             handler:nil].inverted = YES;
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage handleIncomingMessage:pingbackMessage room:room event:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:1 handler:nil];
+}
+
+- (void)testRoomLightMessageLookup
+{
+    XMPPMessageBaseNode *matchingOutgoingMessageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    matchingOutgoingMessageNode.toJID = [XMPPJID jidWithString:@"coven@muclight.shakespeare.lit"];
+    [matchingOutgoingMessageNode registerOutgoingMessageStreamEventID:@"eventID1"];
+    [matchingOutgoingMessageNode registerSentMessageWithStreamJID:[XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"]
+                                                        timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0]];
+    
+    XMPPMessageBaseNode *otherOutgoingMessageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    otherOutgoingMessageNode.toJID = [XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"];
+    [otherOutgoingMessageNode registerOutgoingMessageStreamEventID:@"eventID2"];
+    [otherOutgoingMessageNode registerSentMessageWithStreamJID:[XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"]
+                                                     timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:1]];
+    
+    XMPPMessageBaseNode *matchingIncomingMessageNode = [XMPPMessageBaseNode findOrCreateForIncomingMessageStreamEventID:@"eventID3"
+                                                                                                              streamJID:[XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"]
+                                                                                                            withMessage:[[XMPPMessage alloc] init]
+                                                                                                              timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:2]
+                                                                                                 inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    matchingIncomingMessageNode.fromJID = [XMPPJID jidWithString:@"coven@muclight.shakespeare.lit/hag66@shakespeare.lit"];
+    
+    XMPPMessageBaseNode *otherIncomingMessageNode = [XMPPMessageBaseNode findOrCreateForIncomingMessageStreamEventID:@"eventID4"
+                                                                                                           streamJID:[XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"]
+                                                                                                         withMessage:[[XMPPMessage alloc] init]
+                                                                                                           timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:3]
+                                                                                              inManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    otherIncomingMessageNode.fromJID = [XMPPJID jidWithString:@"hag66@shakespeare.lit/pda"];
+    
+    NSFetchRequest *fetchRequest =
+    [XMPPMessageBaseNode requestTimestampContextWithPredicate:[XMPPMessageBaseNode relevantMessageRoomJIDPredicateWithValue:[XMPPJID jidWithString:@"coven@muclight.shakespeare.lit"]]
+                                             inAscendingOrder:YES
+                                     fromManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    
+    NSArray<id<XMPPMessageContextFetchRequestResult>> *fetchResult = [self.storage.mainThreadManagedObjectContext xmpp_executeForcedSuccessFetchRequest:fetchRequest];
+    
+    XCTAssertEqual(fetchResult.count, 2);
+    XCTAssertEqualObjects(fetchResult[0].relevantMessageNode, matchingOutgoingMessageNode);
+    XCTAssertEqualObjects(fetchResult[1].relevantMessageNode, matchingIncomingMessageNode);
+}
+
+@end
