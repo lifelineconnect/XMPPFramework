@@ -12,7 +12,7 @@
 
 @interface XMPPRoomLightCoreDataStorage : XMPPCoreDataStorage <XMPPRoomLightStorage>
 
-- (void)handleIncomingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room;
-- (void)handleOutgoingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room;
+- (void)handleIncomingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room event:(XMPPElementEvent *)event;
+- (void)handleOutgoingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room event:(XMPPElementEvent *)event;
 
 @end

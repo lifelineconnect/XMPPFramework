@@ -23,7 +23,7 @@
 
 }
 
-- (void)handleIncomingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room{
+- (void)handleIncomingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room event:(XMPPElementEvent *)event {
 	XMPPStream *xmppStream = room.xmppStream;
 	
 	XMPPJID *roomFromUser = [XMPPJID jidWithString:[message from].resource];
@@ -39,7 +39,7 @@
 	}];
 }
 
-- (void)handleOutgoingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room{
+- (void)handleOutgoingMessage:(XMPPMessage *)message room:(XMPPRoomLight *)room event:(XMPPElementEvent *)event {
 	XMPPStream *xmppStream = room.xmppStream;
 
 	[self scheduleBlock:^{

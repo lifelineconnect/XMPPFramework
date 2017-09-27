@@ -624,7 +624,7 @@ static NSString *const XMPPRoomLightDestroy = @"urn:xmpp:muclight:0#destroy";
 	return NO;
 }
 
-- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message{
+- (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event {
 
 	XMPPJID *from = [message from];
 
@@ -648,7 +648,7 @@ static NSString *const XMPPRoomLightDestroy = @"urn:xmpp:muclight:0#destroy";
 	// and that have something in the body
 
 	if ([from isFull] && [message isGroupChatMessageWithBody]) {
-		[xmppRoomLightStorage handleIncomingMessage:message room:self];
+		[xmppRoomLightStorage handleIncomingMessage:message room:self event:event];
 		[multicastDelegate xmppRoomLight:self didReceiveMessage:message];
 	}else if(destroyRoom){
 		[multicastDelegate xmppRoomLight:self roomDestroyed:message];
@@ -662,8 +662,7 @@ static NSString *const XMPPRoomLightDestroy = @"urn:xmpp:muclight:0#destroy";
 	}
 }
 
-- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message
-{
+- (void)xmppStream:(XMPPStream *)sender didSendMessage:(XMPPMessage *)message inContextOfEvent:(XMPPElementEvent *)event {
 	XMPPJID *to = [message to];
 
 	if (![self.roomJID isEqualToJID:to options:XMPPJIDCompareBare]){
@@ -676,7 +675,7 @@ static NSString *const XMPPRoomLightDestroy = @"urn:xmpp:muclight:0#destroy";
 	// A message to an individual recipient would have a <body/>.
 
 	if ([message isGroupChatMessageWithBody]){
-		[xmppRoomLightStorage handleOutgoingMessage:message room:self];
+		[xmppRoomLightStorage handleOutgoingMessage:message room:self event:event];
 	}
 }
 

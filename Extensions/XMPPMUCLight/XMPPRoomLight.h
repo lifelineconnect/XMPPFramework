@@ -45,8 +45,8 @@
 @protocol XMPPRoomLightStorage <NSObject>
 @required
 
-- (void)handleIncomingMessage:(nonnull XMPPMessage *)message room:(nonnull XMPPRoomLight *)room;
-- (void)handleOutgoingMessage:(nonnull XMPPMessage *)message room:(nonnull XMPPRoomLight *)room;
+- (void)handleIncomingMessage:(nonnull XMPPMessage *)message room:(nonnull XMPPRoomLight *)room event:(nonnull XMPPElementEvent *)event;
+- (void)handleOutgoingMessage:(nonnull XMPPMessage *)message room:(nonnull XMPPRoomLight *)room event:(nonnull XMPPElementEvent *)event;
 
 @end
 
