@@ -402,3 +402,64 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XMPPOneToOneChat)
+
+- (void)testIncomingChatMessageHandling
+{
+    XMPPMockStream *mockStream = [[XMPPMockStream alloc] init];
+    mockStream.myJID = [XMPPJID jidWithString:@"romeo@example.net"];
+    
+    XMPPMessage *message = [[XMPPMessage alloc] initWithXMLString:
+                            @"<message from='juliet@example.com'"
+                            @"         to='romeo@example.net'"
+                            @"         type='chat'>"
+                            @"  <body>Art thou not Romeo, and a Montague?</body>"
+                            @"</message>"
+                                                            error:nil];
+    
+    [self expectationForMainThreadStorageManagedObjectsChangeNotificationWithUserInfoKey:NSInsertedObjectsKey count:1 handler:^BOOL(__kindof NSManagedObject *object) {
+        return [object isKindOfClass:[XMPPMessageBaseNode class]];
+    }];
+    
+    [mockStream performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage storeIncomingChatMessage:message inContextOfEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        NSFetchRequest *fetchRequest = [XMPPMessageBaseNode xmpp_fetchRequestInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+        NSArray<XMPPMessageBaseNode *> *fetchResult = [self.storage.mainThreadManagedObjectContext xmpp_executeForcedSuccessFetchRequest:fetchRequest];
+        
+        XCTAssertEqual(fetchResult.count, 1);
+        XCTAssertEqualObjects(fetchResult.firstObject.fromJID, [XMPPJID jidWithString:@"juliet@example.com"]);
+        XCTAssertEqualObjects(fetchResult.firstObject.toJID, [XMPPJID jidWithString:@"romeo@example.net"]);
+        XCTAssertEqualObjects(fetchResult.firstObject.body, @"Art thou not Romeo, and a Montague?");
+        XCTAssertEqual(fetchResult.firstObject.direction, XMPPMessageDirectionIncoming);
+        XCTAssertEqual(fetchResult.firstObject.type, XMPPMessageTypeChat);
+        XCTAssertEqualObjects([fetchResult.firstObject streamJID], [XMPPJID jidWithString:@"romeo@example.net"]);
+        XCTAssertEqualObjects([fetchResult.firstObject streamTimestamp], [NSDate dateWithTimeIntervalSinceReferenceDate:0]);
+    }];
+}
+
+- (void)testSentChatMessageHandling
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    [messageNode registerOutgoingMessageStreamEventID:@"eventID"];
+    [self.storage.mainThreadManagedObjectContext save:nil];
+    
+    XMPPMockStream *mockStream = [[XMPPMockStream alloc] init];
+    mockStream.myJID = [XMPPJID jidWithString:@"juliet@example.com"];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    
+    [mockStream performActionInContextOfFakeEventWithID:@"eventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage registerSentChatMessageEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertEqualObjects([messageNode streamJID], [XMPPJID jidWithString:@"juliet@example.com"]);
+        XCTAssertEqualObjects([messageNode streamTimestamp], [NSDate dateWithTimeIntervalSinceReferenceDate:0]);
+    }];
+}
+
+@end
