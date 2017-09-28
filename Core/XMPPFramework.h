@@ -167,6 +167,7 @@
 #import "XMPPMessageContextNode.h"
 #import "XMPPMessageContextItem.h"
 #import "XMPPMessageContextItem+XMPPMessageContextFetchRequestResult.h"
+#import "XMPPOneToOneChat.h"
 
 FOUNDATION_EXPORT double XMPPFrameworkVersionNumber;
 FOUNDATION_EXPORT const unsigned char XMPPFrameworkVersionString[];
