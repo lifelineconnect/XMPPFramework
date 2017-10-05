@@ -965,6 +965,12 @@
 		DD2AD6EB1F84B49200E0FED2 /* XMPPManagedMessaging.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2AD6DE1F84B49200E0FED2 /* XMPPManagedMessaging.m */; };
 		DD2AD6EC1F84B49200E0FED2 /* XMPPManagedMessaging.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2AD6DE1F84B49200E0FED2 /* XMPPManagedMessaging.m */; };
 		DD2AD6ED1F84B49200E0FED2 /* XMPPManagedMessaging.m in Sources */ = {isa = PBXBuildFile; fileRef = DD2AD6DE1F84B49200E0FED2 /* XMPPManagedMessaging.m */; };
+		DDA11A5D1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h in Headers */ = {isa = PBXBuildFile; fileRef = DDA11A5B1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DDA11A5E1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h in Headers */ = {isa = PBXBuildFile; fileRef = DDA11A5B1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DDA11A5F1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h in Headers */ = {isa = PBXBuildFile; fileRef = DDA11A5B1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DDA11A601F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA11A5C1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m */; };
+		DDA11A611F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA11A5C1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m */; };
+		DDA11A621F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m in Sources */ = {isa = PBXBuildFile; fileRef = DDA11A5C1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m */; };
 		DDAA49A31F697B82005E10B4 /* XMPPMessageCoreDataStorage+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = DDAA49A11F697B82005E10B4 /* XMPPMessageCoreDataStorage+Protected.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DDAA49A41F697B82005E10B4 /* XMPPMessageCoreDataStorage+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = DDAA49A11F697B82005E10B4 /* XMPPMessageCoreDataStorage+Protected.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DDAA49A51F697B82005E10B4 /* XMPPMessageCoreDataStorage+Protected.h in Headers */ = {isa = PBXBuildFile; fileRef = DDAA49A11F697B82005E10B4 /* XMPPMessageCoreDataStorage+Protected.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1579,6 +1585,8 @@
 		DD2159811F602E7500AE3EF7 /* XMPPMessageBaseNode+ContextHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "XMPPMessageBaseNode+ContextHelpers.m"; sourceTree = "<group>"; };
 		DD2AD6DD1F84B49200E0FED2 /* XMPPManagedMessaging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPManagedMessaging.h; sourceTree = "<group>"; };
 		DD2AD6DE1F84B49200E0FED2 /* XMPPManagedMessaging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPManagedMessaging.m; sourceTree = "<group>"; };
+		DDA11A5B1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "XMPPMessageCoreDataStorage+XEP_0198.h"; sourceTree = "<group>"; };
+		DDA11A5C1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "XMPPMessageCoreDataStorage+XEP_0198.m"; sourceTree = "<group>"; };
 		DDAA49A11F697B82005E10B4 /* XMPPMessageCoreDataStorage+Protected.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "XMPPMessageCoreDataStorage+Protected.h"; sourceTree = "<group>"; };
 		DDFFF4081F3DE10700B99353 /* NSManagedObject+XMPPCoreDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSManagedObject+XMPPCoreDataStorage.h"; sourceTree = "<group>"; };
 		DDFFF4091F3DE10700B99353 /* NSManagedObject+XMPPCoreDataStorage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+XMPPCoreDataStorage.m"; sourceTree = "<group>"; };
@@ -2630,6 +2638,8 @@
 			children = (
 				DD2AD6DD1F84B49200E0FED2 /* XMPPManagedMessaging.h */,
 				DD2AD6DE1F84B49200E0FED2 /* XMPPManagedMessaging.m */,
+				DDA11A5B1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h */,
+				DDA11A5C1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m */,
 			);
 			path = "Managed Messaging";
 			sourceTree = "<group>";
@@ -2759,6 +2769,7 @@
 				D9DCD2B41E6250930010D1C7 /* XMPPvCardTempCoreDataStorageObject.h in Headers */,
 				D9DCD2AA1E6250930010D1C7 /* XMPPRoomMessage.h in Headers */,
 				D9DCD3371E6250930010D1C7 /* XMPPRoomLight.h in Headers */,
+				DDA11A5D1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h in Headers */,
 				D9DCD2C01E6250930010D1C7 /* XMPPvCardTempLabel.h in Headers */,
 				D9DCD2D81E6250930010D1C7 /* XMPPDateTimeProfiles.h in Headers */,
 				D9DCD30E1E6250930010D1C7 /* XMPPTime.h in Headers */,
@@ -2929,6 +2940,7 @@
 				D9DCD5011E6256D90010D1C7 /* XMPPvCardTempCoreDataStorageObject.h in Headers */,
 				D9DCD5021E6256D90010D1C7 /* XMPPRoomMessage.h in Headers */,
 				D9DCD5031E6256D90010D1C7 /* XMPPRoomLight.h in Headers */,
+				DDA11A5E1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h in Headers */,
 				D9DCD5041E6256D90010D1C7 /* XMPPvCardTempLabel.h in Headers */,
 				D9DCD5051E6256D90010D1C7 /* XMPPDateTimeProfiles.h in Headers */,
 				D9DCD5061E6256D90010D1C7 /* XMPPTime.h in Headers */,
@@ -3099,6 +3111,7 @@
 				D9DCD6641E6258CF0010D1C7 /* XMPPvCardTempCoreDataStorageObject.h in Headers */,
 				D9DCD6651E6258CF0010D1C7 /* XMPPRoomMessage.h in Headers */,
 				D9DCD6661E6258CF0010D1C7 /* XMPPRoomLight.h in Headers */,
+				DDA11A5F1F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.h in Headers */,
 				D9DCD6671E6258CF0010D1C7 /* XMPPvCardTempLabel.h in Headers */,
 				D9DCD6681E6258CF0010D1C7 /* XMPPDateTimeProfiles.h in Headers */,
 				D9DCD6691E6258CF0010D1C7 /* XMPPTime.h in Headers */,
@@ -3562,6 +3575,7 @@
 				D9DCD2611E6250930010D1C7 /* OMEMOPreKey.m in Sources */,
 				D9DCD3071E6250930010D1C7 /* XMPPStreamManagement.m in Sources */,
 				D9DCD26F1E6250930010D1C7 /* XMPPResourceCoreDataStorageObject.m in Sources */,
+				DDA11A601F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m in Sources */,
 				D9DCD28E1E6250930010D1C7 /* XMPPPrivacy.m in Sources */,
 				D9DCD2911E6250930010D1C7 /* XMPPRoomCoreDataStorage.m in Sources */,
 				D9DCD2591E6250930010D1C7 /* NSXMLElement+OMEMO.m in Sources */,
@@ -3722,6 +3736,7 @@
 				D9DCD4421E6256D90010D1C7 /* OMEMOPreKey.m in Sources */,
 				D9DCD4431E6256D90010D1C7 /* XMPPStreamManagement.m in Sources */,
 				D9DCD4441E6256D90010D1C7 /* XMPPResourceCoreDataStorageObject.m in Sources */,
+				DDA11A611F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m in Sources */,
 				D9DCD4451E6256D90010D1C7 /* XMPPPrivacy.m in Sources */,
 				D9DCD4461E6256D90010D1C7 /* XMPPRoomCoreDataStorage.m in Sources */,
 				D9DCD4471E6256D90010D1C7 /* NSXMLElement+OMEMO.m in Sources */,
@@ -3882,6 +3897,7 @@
 				D9DCD5A51E6258CF0010D1C7 /* OMEMOPreKey.m in Sources */,
 				D9DCD5A61E6258CF0010D1C7 /* XMPPStreamManagement.m in Sources */,
 				D9DCD5A71E6258CF0010D1C7 /* XMPPResourceCoreDataStorageObject.m in Sources */,
+				DDA11A621F851B1D00591D1B /* XMPPMessageCoreDataStorage+XEP_0198.m in Sources */,
 				D9DCD5A81E6258CF0010D1C7 /* XMPPPrivacy.m in Sources */,
 				D9DCD5A91E6258CF0010D1C7 /* XMPPRoomCoreDataStorage.m in Sources */,
 				D9DCD5AA1E6258CF0010D1C7 /* NSXMLElement+OMEMO.m in Sources */,

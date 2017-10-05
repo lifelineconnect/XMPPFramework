@@ -402,3 +402,76 @@
 }
 
 @end
+
+@implementation XMPPMessageCoreDataStorageTests (XMPPManagedMessagingStorage)
+
+- (void)testManagedMessagingPlainMessageUnspecifiedStatus
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    XCTAssertEqual([messageNode managedMessagingStatus], XMPPManagedMessagingStatusUnspecified);
+}
+
+- (void)testManagedMessagingOutgoingMessageRegistration
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    messageNode.stanzaID = @"managedMessageID";
+    [self.storage.mainThreadManagedObjectContext save:NULL];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"managedMessageEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage registerOutgoingManagedMessageID:@"managedMessageID" withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertEqual([messageNode managedMessagingStatus], XMPPManagedMessagingStatusPendingAcknowledgement);
+    }];
+}
+
+- (void)testManagedMessagingSentMessageConfirmation
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    messageNode.stanzaID = @"confirmedMessageID";
+    [self.storage.mainThreadManagedObjectContext save:NULL];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"confirmedMessageEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage registerOutgoingManagedMessageID:@"confirmedMessageID" withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:nil];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    
+    [self.storage registerManagedMessageConfirmationForSentMessageIDs:@[@"confirmedMessageID"]];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertEqual([messageNode managedMessagingStatus], XMPPManagedMessagingStatusAcknowledged);
+    }];
+}
+
+- (void)testManagedMessagingFailureRegistration
+{
+    XMPPMessageBaseNode *messageNode = [XMPPMessageBaseNode insertForOutgoingMessageInManagedObjectContext:self.storage.mainThreadManagedObjectContext];
+    messageNode.stanzaID = @"unconfirmedMessageID";
+    [self.storage.mainThreadManagedObjectContext save:NULL];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    
+    [[[XMPPMockStream alloc] init] performActionInContextOfFakeEventWithID:@"unconfirmedMessageEventID" timestamp:[NSDate dateWithTimeIntervalSinceReferenceDate:0] block:^(XMPPElementEvent *fakeEvent) {
+        [self.storage registerOutgoingManagedMessageID:@"unconfirmedMessageID" withEvent:fakeEvent];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:nil];
+    
+    [self expectationForNotification:NSManagedObjectContextObjectsDidChangeNotification object:self.storage.mainThreadManagedObjectContext handler:nil];
+    
+    [self.storage registerManagedMessageFailureForUnconfirmedMessages];
+    
+    [self waitForExpectationsWithTimeout:5 handler:^(NSError * _Nullable error) {
+        XCTAssertEqual([messageNode managedMessagingStatus], XMPPManagedMessagingStatusUnacknowledged);
+    }];
+}
+
+@end
